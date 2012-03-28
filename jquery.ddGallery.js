@@ -1,39 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.3
+ * jQuery ddGallery v2.4.1 :: 2012-03-28
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
  * Free to use and abuse under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
  * 
- * TODO:
- * + Resizability
- * + integrate with Vimeo API
- * + touchscreen swipe images to navigate
- * + Ken Burns effects
- * + Continuous scrolling mode
- *
- * v2.3 :: 2012-03-23
- * + clickable image support
- * + touchscreen support
- * + change .live() calls to .on()
- * x fix disappearing arrows bug
- * x fix direction of some slide/push animations
- *
- * version history on website
- *
  */
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-// YouTube API LOAD CHECK
+// YouTube API LOAD CHECK 
 window.ddGalleryWaitForYoutube=true;
-function onYouTubePlayerAPIReady() {
-	window.ddGalleryWaitForYoutube=false;
+// Collision detection
+if (typeof(onYouTubePlayerAPIReady) == undefined) {
+	function onYouTubePlayerAPIReady() {
+		window.ddGalleryWaitForYoutube=false;
+	};
 };
+
 // ----------------------
 	
 (function( $ ) {
@@ -56,7 +44,10 @@ function onYouTubePlayerAPIReady() {
 	galleryTpl = '<div class="ddGallery-stage-wrapper" style="width:100%; height:100%;">';
 	galleryTpl+= 	'<div class="ddGallery-stage loading" style="width:100%; height:100%;"></div>';
 	galleryTpl+= 	'<div class="ddGallery-count"></div>';
-	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-zoom"></a>';
+	galleryTpl+= 	'<div class="ddGallery-toggles">';
+	galleryTpl+= 		'<a href="javascript:;" class="ddGallery-fullScreen"><div><div></div></div></a>';
+	galleryTpl+= 		'<a href="javascript:;" class="ddGallery-zoom"></a>';
+	galleryTpl+= 	'</div>';
 	galleryTpl+= 	'<div class="ddGallery-caption-wrapper" style="position:absolute; bottom:0; overflow:hidden; width:100%; opacity:0">';
 	galleryTpl+= 		'<div class="ddGallery-caption"></div>';
 	galleryTpl+= 	'</div>';
@@ -104,6 +95,7 @@ function onYouTubePlayerAPIReady() {
 		dd.pinned=false;
 		dd.autopinned=false;
 		dd.touched=false;
+		dd.fullScreen=false;
 		dd.sH = 0;
 		dd.navSource = '';
 		dd.capSizes = {heights:{},borders:{'t':0,'b':0},margins:{'t':0,'b':0},padding:{'t':0,'b':0}};
@@ -157,6 +149,9 @@ function onYouTubePlayerAPIReady() {
 		hoverPause : true,
 		enlarge : true,
 		stretch : false,
+		
+		fullScreen : true,
+		
 		zoom : false,
 		hideZoom : true
 	};
@@ -202,8 +197,23 @@ function onYouTubePlayerAPIReady() {
 				dd.settings.autoPlay = false;
 			};
 			
+			// set css value(s) on main container
+			dd.gal.css({
+				'overflow' : 'hidden',
+				'position' : (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position')
+			});
+			
 			// store original content
 			dd.origData = dd.gal.html();
+			dd.origCSS = {
+				'z-index':dd.gal.css('z-index'),
+				'position':dd.gal.css('position'),
+				'top':dd.gal.css('top'),
+				'left':dd.gal.css('left'),
+				'width':dd.gal.css('width'),
+				'height':dd.gal.css('height'),
+				'margin':dd.gal.css('margin')				
+			};
 			dd.orig = $('<div />').html(dd.gal.html());
 			
 			// populate current gallery with requisite html structure
@@ -220,12 +230,14 @@ function onYouTubePlayerAPIReady() {
 				dd.thumbWrap = dd.gal.find('.ddGallery-thumbs-wrapper');
 				dd.thumbs = dd.thumbWrap.children('.ddGallery-thumbs');
 				dd.zoom = dd.gal.find('.ddGallery-zoom');
+				dd.full = dd.gal.find('.ddGallery-fullScreen');
 				
 				// set layer order
 				dd.mainZ = (dd.gal.css('z-index') == 'auto') ? 0 : parseInt(dd.gal.css('z-index'));
 				dd.gal.find('.ddGallery-stage-wrapper').css({'z-index':dd.mainZ});
 				dd.controls.css({'z-index':dd.mainZ+1});
 				dd.tab.css({'z-index':dd.mainZ+1000});
+				dd.zoom.parent('.ddGallery-toggles').css({'z-index':dd.mainZ+6});
 				if (!dd.settings.externalCaptions) { dd.caption.css({'z-index':dd.mainZ+5}); };
 				
 				// set up count
@@ -237,17 +249,17 @@ function onYouTubePlayerAPIReady() {
 				
 				// set up zoom toggle
 				if (dd.settings.zoom) {
-					dd.zoom.css({'display':'none','opacity':0,'z-index':dd.mainZ+6});
+					dd.zoom.css({'display':'none','opacity':0});
 				} else {
 					dd.zoom.css({'display':'none'});
 				};
 				
-				// set css value(s) on main container
-				dd.gal.css({
-					'overflow' : 'hidden',
-					'position' : (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position')
-				});
-				
+				// set up full screen toggle
+				if (dd.settings.fullScreen) {
+					dd.full.css({'display':'block','opacity':1});
+				} else {
+					dd.full.css({'display':'none'});
+				};
 				
 				///////////////////
 				// HIDE PIN TAB? //
@@ -569,7 +581,7 @@ function onYouTubePlayerAPIReady() {
 						
 						// start pinned?
 						if (dd.settings.pinned && dd.settings.pinTab) {
-							dd.tab.click();
+							dd.tab.mouseup();
 						};
 						
 					});
@@ -607,6 +619,8 @@ function onYouTubePlayerAPIReady() {
 									? true
 									: (dd.curItem < ($(this).index()+1));
 					
+					// set stage height
+					dd.sH = (dd.settings.controlPush) ? dd.stage.height()-dd.controlH : dd.stage.height();
 					
 					// update curItem marker
 					dd.curItem = $(this).index()+1;
@@ -651,7 +665,7 @@ function onYouTubePlayerAPIReady() {
 						
 						// if still autopinned on next, unpin
 						if (dd.autopinned) {
-							dd.tab.click();
+							dd.tab.mouseup();
 						};
 						
 						// clear timers
@@ -691,7 +705,8 @@ function onYouTubePlayerAPIReady() {
 									dd.stage.append('<img src="'+url+'" class="ddGallery-item" id="'+itemId+'" alt="'+cap+'" style="opacity:0;position:absolute;" />');
 									dd.stage.children('#'+itemId).load(function(){
 										dd.stage.removeClass('loading');
-										dd.setImageDimensions(dd.stage.children('#'+itemId), dd.settings.stageRotateType, typeFrom, dir, 'in');
+										dd.stage.find('#'+itemId).addClass('selected');
+										dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in');
 									});
 									break;
 								
@@ -703,7 +718,8 @@ function onYouTubePlayerAPIReady() {
 									dd.stage.append('<a href="'+linkOut+'" target="'+linkTarget+'"><img id="'+itemId+'" src="'+url+'" class="ddGallery-item" alt="'+cap+'" style="opacity:0;position:absolute;" /></a>');
 									dd.stage.find('#'+itemId).load(function(){
 										dd.stage.removeClass('loading');
-										dd.setImageDimensions(dd.stage.find('#'+itemId), dd.settings.stageRotateType, typeFrom, dir, 'in');
+										dd.stage.find('#'+itemId).addClass('selected');
+										dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in');
 									});
 									break;
 									
@@ -715,6 +731,7 @@ function onYouTubePlayerAPIReady() {
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
 									dd.stage.append('<div class="ddGallery-div-wrapper ddGallery-item" id="'+itemId+'" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:auto"><div class="'+sourceClass+'" id="'+sourceId+'">'+dd.orig.find('.'+itemId).html()+'</div></div>').ready(function(){
 										dd.stage.removeClass('loading');
+										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
@@ -726,6 +743,7 @@ function onYouTubePlayerAPIReady() {
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
 									dd.stage.append('<div class="ddGallery-iframe-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:auto" id="'+itemId+'"><iframe style="border:none;width:100%;height:100%;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></iframe></div>').ready(function(){
 										dd.stage.removeClass('loading');
+										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
@@ -738,14 +756,15 @@ function onYouTubePlayerAPIReady() {
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
 									dd.stage.append('<div class="ddGallery-youtube-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:hidden" id="'+itemId+'"><div id="'+itemId+'-video"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
+										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 													
 										dd.youtubePlayers[itemId] = new window['YT'].Player(itemId+'-video', {
-											height: dd.sH,
-											width: dd.stage.width(),
+											height: "100%",
+											width: "100%",
 											videoId: url,
 											playerVars: {
-												wmode: "transparent"
+												wmode: "opaque"
 											},
 											events: {
 												
@@ -771,7 +790,7 @@ function onYouTubePlayerAPIReady() {
 															dd.userPaused = false;
 															
 															if (!dd.pinned) {
-																dd.tab.click();
+																dd.tab.mouseup();
 																dd.autopinned = true;
 															};
 															break;
@@ -785,7 +804,7 @@ function onYouTubePlayerAPIReady() {
 																dd.youtubeDelay = setTimeout(function(){
 																	dd.videoPlaying = false;
 																	if (dd.pinned && dd.autopinned) {
-																		dd.tab.click();
+																		dd.tab.mouseup();
 																	};
 																	if (dd.settings.rotate && (!dd.hover || !dd.settings.hoverPause) && !dd.settings.playlist) {
 																		clearTimeout(dd.rotator);
@@ -810,7 +829,7 @@ function onYouTubePlayerAPIReady() {
 																dd.youtubeDelay = setTimeout(function(){
 																	dd.videoPlaying = false;
 																	if (dd.pinned && dd.autopinned) {
-																		dd.tab.click();
+																		dd.tab.mouseup();
 																	};
 																	if (dd.settings.rotate && (!dd.hover || !dd.settings.hoverPause)) {
 																		clearTimeout(dd.rotator);
@@ -838,6 +857,7 @@ function onYouTubePlayerAPIReady() {
 								case 'vimeo' :
 									dd.stage.append('<div class="ddGallery-vimeo-wrapper" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:hidden" id="'+itemId+'"><iframe style="border:none;width:100%;height:100%;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
+										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
@@ -845,16 +865,20 @@ function onYouTubePlayerAPIReady() {
 													
 						// ITEM IS ALREADY LOADED: JUST SHOW IT
 						} else {
-							// resize images anyway (in case stage dimensions changed)
+							
+							dd.stage.find('#'+itemId).addClass('selected');
+						
+							// resize items anyway (in case stage dimensions changed)
 							if (type=='img') {
 								dd.stage.removeClass('loading');
-								dd.setImageDimensions(dd.stage.children('#'+itemId), dd.settings.stageRotateType, typeFrom, dir, 'in');
+								dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in');
 							
 							} else if (type=='clickable') {
 								dd.stage.removeClass('loading');
-								dd.setImageDimensions(dd.stage.find('#'+itemId), dd.settings.stageRotateType, typeFrom, dir, 'in');
+								dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in');
 							
 							} else {
+								dd.stage.find('#'+itemId).css({'height':dd.sH});
 								dd.showZoom(false, dd.settings.stageRotateSpeed);
 								dd.stage.removeClass('loading');
 								eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -1243,7 +1267,7 @@ function onYouTubePlayerAPIReady() {
 						if (dd.zoom.is('.active')) {
 							dd.zoom.removeClass('active');
 							image.off();
-							dd.setImageDimensions(image, dd.settings.stageRotateType, '', '', 'unzoom');
+							dd.setImageDimensions(image, '', '', 'unzoom');
 						
 						// activate
 						} else {
@@ -1366,6 +1390,23 @@ function onYouTubePlayerAPIReady() {
 					});
 				};
 				
+				///////////////////////
+				// FULL SCREEN CLICK //
+				///////////////////////
+				dd.full.on('click', function(){
+					
+					if (dd.fullScreen) {
+						dd.full.removeClass('active');
+						dd.fullScreen = false;
+						dd.resizeMe(false);
+						
+					} else {
+						dd.full.addClass('active');
+						dd.fullScreen = true;
+						dd.resizeMe(true);
+					};
+				});
+				
 				//------------------------------------
 				
 				///////////////
@@ -1402,7 +1443,41 @@ function onYouTubePlayerAPIReady() {
 					}, 100);
 				});
 				
-	
+				//------------------------------------
+				
+				///////////////////
+				// WINDOW RESIZE //
+				///////////////////
+				$(window).on('resize.'+dd.id, function(){
+					clearTimeout(dd.windowResizer);
+					dd.windowResizer = setTimeout(function(){
+						if (!dd.fullScreen) {
+							dd.gal.css({
+								'z-index':'',
+								'position':'',
+								'top':'',
+								'left':'',
+								'width':'',
+								'height':'',
+								'margin':''				
+							});
+							dd.origCSS = {
+								'z-index':dd.gal.css('z-index'),
+								'position': (dd.gal.css('position') == 'static') ? 'relative' : dd.gal.css('position'),
+								'top':dd.gal.css('top'),
+								'left':dd.gal.css('left'),
+								'width':dd.gal.css('width'),
+								'height':dd.gal.css('height'),
+								'margin':dd.gal.css('margin')				
+							};
+							dd.gal.css(dd.origCSS);
+						};
+						dd.resizeMe(dd.fullScreen);
+						
+					}, 100);
+				});
+						
+				
 			});
 		},		
 		
@@ -1418,9 +1493,6 @@ function onYouTubePlayerAPIReady() {
 			dd.stage.find('img').off();
 			dd.zoom.removeClass('active');
 			
-			// select new item
-			item.addClass('selected');
-				
 			// remove flag
 			dd.animating = false;
 					
@@ -1604,25 +1676,91 @@ function onYouTubePlayerAPIReady() {
 		
 		//------------------------------------
 		
+		//////////////////
+		// RESIZE STAGE //
+		//////////////////
+		resizeMe : function(full) {
+			var dd = this,
+				cur = dd.stage.find('.selected');
+			
+			// if animating... finish immediately, before resize
+			dd.stage.find('.ddGallery-item').stop(1,1);
+			
+			// set gallery wrapper options
+			if (full) {
+				dd.gal.css({
+					'z-index':10000,
+					'position':'fixed',
+					'top':0,
+					'left':0,
+					'width':$(window).width(),
+					'height':$(window).height(),
+					'margin':0
+				});
+			} else {
+				dd.gal.css(dd.origCSS);
+			};
+			
+			// set stage height
+			dd.sH = (dd.settings.controlPush) ? dd.stage.height()-dd.controlH : dd.stage.height();
+			
+			// reposition tab
+			if (dd.settings.pinTab) {
+				dd.tab.css({
+					'left' : Math.floor(dd.stage.width()/2) - Math.floor(dd.tab.outerWidth()/2)
+				});
+			};
+			
+			// reset thumb max scroll
+			if (dd.settings.thumbs && dd.settings.arrows) {
+				dd.maxScroll = (dd.thumbs.outerWidth() - dd.thumbWrap.outerWidth()) * -1;
+			};
+			
+			// redraw arrows
+			dd.arrowDisplay();
+			
+			// unzoom if zoomed
+			if (dd.zoom.is('.active')) {
+				dd.zoom.click();
+			};
+			
+			// resize current item
+			if ( cur.is('.ddGallery-iframe-wrapper')
+				|| cur.is('.ddGallery-div-wrapper')
+				|| cur.is('.ddGallery-vimeo-wrapper')
+				|| cur.is('.ddGallery-youtube-wrapper')
+				) {
+					cur.css({'height':dd.sH});
+			} else {
+				dd.setImageDimensions (cur, '', '', 'resize');
+			};
+				
+		},
+		
 		//////////////////////////
 		// SET IMAGE DIMENSIONS //
 		//////////////////////////
-		setImageDimensions : function(image, animType, typeFrom, dir, target) {
+		setImageDimensions : function(image, typeFrom, dir, target) {
 			var dd = this,
 				clickable = false,
 				itemId = image.attr('id'),
 				iW, iH, iR,
+				orig,
 				sW, sR,
 				nW, nH, speed;
 			
+			// store original dimensions for a resize
+			if (target=='resize') {
+				orig = {
+					'width':image.css('width'),
+					'height':image.css('height'),
+					'top':image.css('top'),
+					'left':image.css('left')
+				};
+			};			
 			
-			// initialize
-			if (image.is('a')) {
-				clickable = true;
-				image = image.children('img');
-			};
-			
-			image.css({'width':'','height':''}); // reset dimensions
+			// reset dimensions to get full size
+			image.css({'width':'','height':''});
 			
 			iW = image.width();
 			iH = image.height();
@@ -1677,17 +1815,28 @@ function onYouTubePlayerAPIReady() {
 			};
 						
 			// place image
-			if (target=='in') {
-				speed = 0;
+			switch (target) {
 				
-			} else if (target=='unzoom') {
-				speed = dd.settings.controlHideSpeed;
-			
+				// object should be placed immediately
+				case 'in' :
+					speed = 0;
+					break;
+				
+				// reset original dimensions for a resize
+				case 'resize' :
+					image.css(orig);
+					speed = 0;
+					break;
+				
+				// animate to resized position
+				case 'unzoom' :
+					speed = dd.settings.controlHideSpeed;
+					break;			
 			};
 				
 			image.animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((dd.sH/2)-(iH/2)), 'display':'block'}, speed, function(){
 				if (clickable) { image = image.parent('a'); };
-				if (target=='in') { eval('dd.animIn_'+animType+'(image,"img",typeFrom,dir);'); };
+				if (target=='in') { eval('dd.animIn_'+dd.settings.stageRotateType+'(image,"img",typeFrom,dir);'); };
 			});
 		},
 		

@@ -2,6 +2,13 @@ Title: ddGallery Version History
 Author: Darren Doyle
 
 
+### v2.4.1 :: 2012-03-28
+* + fix bugs relating to resizability
+
+### v2.4 :: 2012-03-27
+* + full window mode
+* + resizability
+
 ### v2.3 :: 2012-03-23
 * + clickable image support
 * + touchscreen support

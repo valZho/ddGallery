@@ -49,15 +49,22 @@
 	content: ' GALLERY ITEMS »';
 }
 
-
-/* ---===###|[ ZOOM BUTTON ]|###===--- */
-.ddGallery-zoom {
-	background: #000;
-	color: #ddd;
-	font-size: 11px;
+/* ---===###|[ FULL SCREEN / ZOOM WRAPPER ]|###===--- */
+.ddGallery-toggles {
 	position: absolute;
 	top: 10px;
 	right: 10px;
+	white-space: nowrap;
+	width: 100%;
+	text-align: right;
+}
+
+/* ---===###|[ FULL SCREEN BUTTON ]|###===--- */
+.ddGallery-fullScreen {
+	float: right;
+	background: #000;
+	color: #ddd;
+	font-size: 11px;
 	padding: 6px;
 	white-space: nowrap;
 	border-left-width: 0;
@@ -65,6 +72,76 @@
 	box-shadow: 0 0 5px #fff;
 	text-decoration: none;
 	border-radius: 5px;
+	margin: 0 5px;
+}
+
+.ddGallery-fullScreen:hover,
+.ddGallery-fullScreen:hover > div > div {
+	background: #42BDFF;
+	color: #fff;
+}
+
+.ddGallery-fullScreen.active {
+	opacity: .3;
+}
+
+.ddGallery-fullScreen.active > div {
+	background: #000;
+}
+
+.ddGallery-fullScreen > div {
+	position: relative;
+	display: block;
+	background: #fff;
+	width: 14px;
+	height: 14px;
+}
+
+.ddGallery-fullScreen.active > div {
+	border: solid 1px #fff;
+	background: none;
+}
+
+.ddGallery-fullScreen > div > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	background: #000;
+	width: 14px;
+	height: 14px;
+	border-radius: 100px;
+}
+
+.ddGallery-fullScreen.active > div > div {
+	top: 4px;
+	left: 4px;
+	width: 6px;
+	height: 6px;
+	background: #fff;
+	border-radius: 0;
+}
+
+.ddGallery-fullScreen.active:hover > div > div {
+	background: #fff;
+}
+	
+
+
+/* ---===###|[ ZOOM BUTTON ]|###===--- */
+.ddGallery-zoom {
+	float: right;
+	background: #000;
+	color: #ddd;
+	font-size: 11px;
+	padding: 6px;
+	white-space: nowrap;
+	border-left-width: 0;
+	font-weight: bold;
+	box-shadow: 0 0 5px #fff;
+	text-decoration: none;
+	border-radius: 5px;
+	margin: 0 5px;
 }
 
 .ddGallery-zoom:hover {
