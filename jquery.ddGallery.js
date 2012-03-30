@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.4.1 :: 2012-03-28
+ * jQuery ddGallery v2.4.2 :: 2012-03-30
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -151,6 +151,10 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 		stretch : false,
 		
 		fullScreen : true,
+		controlPushOnFull : true,
+		hideThumbsOnFull : false,
+		hideCaptionsOnFull : false,
+		hideCountOnFull : true,
 		
 		zoom : false,
 		hideZoom : true
@@ -546,7 +550,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 						};
 						
 						// set stage height
-						dd.sH = (dd.settings.controlPush) ? dd.stage.height()-dd.controlH : dd.stage.height();
+						dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.stage.height()-dd.controlH : dd.stage.height();
 						
 						
 					});
@@ -620,7 +624,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 									: (dd.curItem < ($(this).index()+1));
 					
 					// set stage height
-					dd.sH = (dd.settings.controlPush) ? dd.stage.height()-dd.controlH : dd.stage.height();
+					dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.stage.height()-dd.controlH : dd.stage.height();
 					
 					// update curItem marker
 					dd.curItem = $(this).index()+1;
@@ -928,21 +932,14 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 									
 									// show controller?
 									if (!dd.pinned) {
-										if (dd.settings.thumbs && (!dd.settings.hideThumbs || (dd.settings.hideThumbs && dd.hover))) { con = true; };
+										if (dd.settings.thumbs && (!dd.settings.hideThumbs || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
 									
 										// move controls
 										dd.moveControls(itemId, con, true, dd.settings.stageRotateSpeed);
 									};
 									
 									// ---CAPTION HIDE TIMER---
-									// not pinned with internal captions with caption hiding?
-									if (!dd.hover && !dd.pinned && (dd.settings.captions && !dd.settings.externalCaptions) && dd.settings.hideCaptions) {
-										
-										// delay, then slide up caption and tab
-										dd.captionDelay = setTimeout(function(){
-											dd.moveControls(itemId, con, false, dd.settings.stageRotateSpeed);
-										}, dd.settings.captionPause);
-									};
+									dd.captionTimer(con);
 								});
 							};
 							
@@ -1095,7 +1092,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 					};
 					
 					// hide the count?
-					if (dd.settings.count && dd.settings.hideCount ) {
+					if (dd.settings.count && (dd.settings.hideCount || (dd.settings.hideCountOnFull && dd.fullScreen))) {
 						dd.count.stop(1,0).animate({'opacity':0}, dd.settings.controlHideSpeed);
 					};
 					
@@ -1145,7 +1142,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 					};
 					
 					// show the count?
-					if (dd.settings.count && dd.settings.hideCount ) {
+					if (dd.settings.count && (dd.settings.hideCount && !(dd.settings.hideCountOnFull && dd.fullScreen))) {
 						dd.count.stop(1,0).animate({'opacity':1}, dd.settings.controlHideSpeed);
 					};
 					
@@ -1160,7 +1157,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 					if (!dd.pinned) {
 						
 						// show controller?
-						if (dd.settings.thumbs && !dd.settings.hideThumbs) { con = true; };
+						if (dd.settings.thumbs && (!dd.settings.hideThumbs || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
 					
 						// move controls
 						dd.moveControls(dd.caption.attr('itemId'), con, true, dd.settings.controlHideSpeed);
@@ -1170,14 +1167,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 					////////////////////////////////////////
 					
 					// ---CAPTION HIDE TIMER---
-					if (!dd.pinned && (dd.settings.captions && !dd.settings.externalCaptions) && dd.settings.hideCaptions) {
-						
-						// delay, then slide up caption and tab
-						clearTimeout(dd.captionDelay);
-						dd.captionDelay = setTimeout(function(){
-							dd.moveControls(dd.caption.attr('itemId'), con, false, dd.settings.captionFadeSpeed);						
-						}, dd.settings.captionPause);
-					};
+					dd.captionTimer(con);
 					
 					
 				});
@@ -1393,19 +1383,21 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 				///////////////////////
 				// FULL SCREEN CLICK //
 				///////////////////////
-				dd.full.on('click', function(){
-					
-					if (dd.fullScreen) {
-						dd.full.removeClass('active');
-						dd.fullScreen = false;
-						dd.resizeMe(false);
+				if (dd.settings.fullScreen) {
+					dd.full.on('click', function(){
 						
-					} else {
-						dd.full.addClass('active');
-						dd.fullScreen = true;
-						dd.resizeMe(true);
-					};
-				});
+						if (dd.fullScreen) {
+							dd.full.removeClass('active');
+							dd.fullScreen = false;
+							dd.resizeMe(false);
+							
+						} else {
+							dd.full.addClass('active');
+							dd.fullScreen = true;
+							dd.resizeMe(true);
+						};
+					});
+				};
 				
 				//------------------------------------
 				
@@ -1435,9 +1427,9 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 							dd.touched=false;
 							
 							// don't pin the controls?
-							if (dd.settings.thumbs && dd.settings.controlPush && !dd.settings.hideThumbs) { con=true; };
+							if (dd.settings.thumbs && (!dd.settings.hideThumbs || (dd.settings.controlPushOnFull && dd.fullScreen))) { con=true; };
 							
-							// move the controls immediately
+							// move the controls
 							dd.moveControls(dd.caption.attr('itemId'), con, false, dd.settings.controlHideSpeed);
 						};
 					}, 100);
@@ -1702,7 +1694,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 			};
 			
 			// set stage height
-			dd.sH = (dd.settings.controlPush) ? dd.stage.height()-dd.controlH : dd.stage.height();
+			dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && full)) ? dd.stage.height()-dd.controlH : dd.stage.height();
 			
 			// reposition tab
 			if (dd.settings.pinTab) {
@@ -1777,13 +1769,14 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 			},n:{}};
 			
 			// enable image zoom?
-			dd.zoom.removeClass('active');
-			if (((iH>dd.sH) || (iW>sW)) && dd.settings.zoom && (dd.hover || !dd.settings.hideZoom)) {
-				dd.showZoom(true, dd.settings.stageRotateSpeed);
-			} else {
-				dd.showZoom(false, dd.settings.stageRotateSpeed);
-			};
-			
+			if (dd.settings.zoom) {
+				dd.zoom.removeClass('active');
+				if (((iH>dd.sH) || (iW>sW)) && dd.settings.zoom && (dd.hover || !dd.settings.hideZoom)) {
+					dd.showZoom(true, dd.settings.stageRotateSpeed);
+				} else {
+					dd.showZoom(false, dd.settings.stageRotateSpeed);
+				};
+			};			
 			
 			// should the image be stretched?
 			if (dd.settings.stretch) {
@@ -1901,9 +1894,9 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 			};
 		},	
 		
-		////////////////////
-		// TIMER FUNCTION //
-		////////////////////
+		//////////////////
+		// ROTATE ITEMS //
+		//////////////////
 		rotateItems : function(forward) {
 			var dd = this, n=dd.curItem;
 			
@@ -1913,6 +1906,19 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 				n = ((n-1) >= 1) ? n-1 : dd.itemCount;
 			};
 			dd.thumbs.children('a:nth-child('+n+')').click();
+		},
+		
+		///////////////////
+		// CAPTION TIMER //
+		///////////////////
+		captionTimer : function(showControls) {
+			var dd = this;
+			if (!dd.pinned && (dd.settings.captions && !dd.settings.externalCaptions) && (dd.settings.hideCaptions && (dd.settings.hideCaptionsOnFull && !dd.fullScreen))) {
+				clearTimeout(dd.captionDelay);
+				dd.captionDelay = setTimeout(function(){
+					dd.moveControls(dd.caption.attr('itemId'), showControls, false, dd.settings.captionFadeSpeed);						
+				}, dd.settings.captionPause);
+			};
 		},
 		
 		///////////////////////
