@@ -1,9 +1,6 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
-### v2.4.3 :: 2012-03-30
-* x fix minor bug with full screen options
-
 ### v2.4.2 :: 2012-03-30
 * + add extra fullScreen options
 * x fix bugs with zoom and full screen buttons
