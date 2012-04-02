@@ -1,8 +1,11 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.4.4 :: 2012-04-02
+* x fix YouTube API loading w/ Firefox
+
 ### v2.4.3 :: 2012-03-30
-* x fix bugs full screen options
+* x fix bugs with full screen options
 
 ### v2.4.2 :: 2012-03-30
 * + add extra fullScreen options

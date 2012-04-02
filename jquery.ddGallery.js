@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.4.3 :: 2012-03-30
+ * jQuery ddGallery v2.4.4 :: 2012-04-02
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -16,7 +16,7 @@
 // YouTube API LOAD CHECK 
 window.ddGalleryWaitForYoutube=true;
 // Collision detection
-if (typeof(onYouTubePlayerAPIReady) == undefined) {
+if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	function onYouTubePlayerAPIReady() {
 		window.ddGalleryWaitForYoutube=false;
 	};
@@ -36,6 +36,7 @@ if (typeof(onYouTubePlayerAPIReady) == undefined) {
 			var newTag, firstScript;
 			newTag = document.createElement('script');
 			newTag.src = "http://www.youtube.com/player_api";
+			newTag.type = "text/javascript";
 			firstScript = document.getElementsByTagName('script')[0];
 			firstScript.parentNode.insertBefore(newTag, firstScript);
 		};
