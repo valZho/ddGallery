@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.4.5 :: 2012-04-02
+ * jQuery ddGallery v2.5 :: 2012-04-04
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -95,6 +95,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		dd.videoPlaying=false;
 		dd.pinned=false;
 		dd.autopinned=false;
+		dd.userPlay=false;
+		dd.paused=false;
 		dd.touched=false;
 		dd.fullScreen=false;
 		dd.sH = 0;
@@ -811,7 +813,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 																	if (dd.pinned && dd.autopinned) {
 																		dd.tab.mouseup();
 																	};
-																	if (dd.settings.rotate && (!dd.hover || !dd.settings.hoverPause) && !dd.settings.playlist) {
+																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.settings.playlist && !dd.paused) {
 																		clearTimeout(dd.rotator);
 																		dd.rotator = setTimeout(function(){
 																			dd.navSource='auto';
@@ -824,7 +826,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 														
 														// ON ENDED
 														case window['YT'].PlayerState.ENDED :
-															if (dd.settings.playlist && !isLast) {
+															if (dd.settings.playlist && !isLast && !dd.paused) {
 																dd.userPaused = false;
 																event.target.seekTo(0,true);
 																dd.navSource='auto';
@@ -836,7 +838,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 																	if (dd.pinned && dd.autopinned) {
 																		dd.tab.mouseup();
 																	};
-																	if (dd.settings.rotate && (!dd.hover || !dd.settings.hoverPause)) {
+																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.paused) {
 																		clearTimeout(dd.rotator);
 																		dd.rotator = setTimeout(function(){
 																			dd.navSource='auto';
@@ -936,7 +938,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 										if (dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
 									
 										// move controls
-										dd.moveControls(itemId, con, true, dd.settings.stageRotateSpeed);
+										dd.moveControls(con, true, dd.settings.stageRotateSpeed);
 									};
 									
 									// ---CAPTION HIDE TIMER---
@@ -1119,7 +1121,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						if (dd.settings.thumbs) { con = true; };
 					
 						// move controls
-						dd.moveControls(dd.caption.attr('itemId'), con, true, dd.settings.controlHideSpeed);
+						dd.moveControls(con, true, dd.settings.controlHideSpeed);
 					};
 					
 					////////////////////////////////////////
@@ -1136,7 +1138,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					dd.hover = false;
 					
 					// restart timers
-					if (dd.settings.rotate && dd.settings.hoverPause && !dd.videoPlaying) {
+					if ((dd.settings.rotate || dd.userPlay) && dd.settings.hoverPause && !dd.videoPlaying && !dd.paused) {
 						clearTimeout(dd.rotator);
 						dd.rotator = setTimeout(function(){
 							dd.navSource='auto';
@@ -1168,7 +1170,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						if (dd.settings.thumbs && (!dd.settings.hideThumbs || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
 					
 						// move controls
-						dd.moveControls(dd.caption.attr('itemId'), con, true, dd.settings.controlHideSpeed);
+						dd.moveControls(con, true, dd.settings.controlHideSpeed);
 					
 					};
 					
@@ -1286,9 +1288,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							
 							clearTimeout(dd.touchy);
 							
-							x = (x>tW) ? tW : (x<0) ? 0 : x;
-							y = (y>tH) ? tH : (y<0) ? 0 : y;
+							x = (e.pageX==undefined) ? Math.floor(tW/2) : (x>tW) ? tW : (x<0) ? 0 : x;
+							y = (e.pageY==undefined) ? Math.floor(tH/2) : (y>tH) ? tH : (y<0) ? 0 : y;
 								
+							
 							// animate to full size
 							image.animate({
 								'left' : ((iW>sW) ? (-1*Math.ceil((x/tW)*(iW-sW))) : Math.floor((sW-iW)/2) ),
@@ -1438,7 +1441,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							if (dd.settings.thumbs && (!dd.settings.hideThumbs || (dd.settings.controlPushOnFull && dd.fullScreen))) { con=true; };
 							
 							// move the controls
-							dd.moveControls(dd.caption.attr('itemId'), con, false, dd.settings.controlHideSpeed);
+							dd.moveControls(con, false, dd.settings.controlHideSpeed);
 						};
 					}, 100);
 				});
@@ -1497,7 +1500,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			dd.animating = false;
 					
 			// restart timer
-			if (dd.settings.rotate && (!dd.hover || !dd.settings.hoverPause)) {
+			if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.paused) {
 				dd.rotator = setTimeout(function(){
 					dd.navSource='auto';
 					dd.rotateItems(true);
@@ -1858,8 +1861,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		///////////////////
 		// MOVE CONTROLS //
 		///////////////////
-		moveControls : function(id, con, cap, speed) {
+		moveControls : function(con, cap, speed) {
 			var dd = this,
+				id = dd.caption.attr('itemId'),
 				conH=0,
 				capH=0;
 			
@@ -1924,7 +1928,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			if (!dd.pinned && (dd.settings.captions && !dd.settings.externalCaptions) && (dd.settings.hideCaptions && (dd.settings.hideCaptionsOnFull && !dd.fullScreen))) {
 				clearTimeout(dd.captionDelay);
 				dd.captionDelay = setTimeout(function(){
-					dd.moveControls(dd.caption.attr('itemId'), showControls, false, dd.settings.captionFadeSpeed);						
+					dd.moveControls(showControls, false, dd.settings.captionFadeSpeed);						
 				}, dd.settings.captionPause);
 			};
 		},
@@ -1984,25 +1988,138 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	// PLUGIN CALL //
 	/////////////////
 	$.fn.ddGallery = function(options) { 
+		var control='load';
 		
-		// get user options
-		var args = (typeof options === 'object' || !options ) ? options : arguments[1];
+		// listen for external controls
+		switch (options) {
+			
+			case 'togglePlay' :
+			case 'play' :
+			case 'pause' :
+			case 'last' :
+			case 'next' :
+			case 'fullScreen' :
+			case 'zoom' :
+			case 'showControls' :
+			case 'hideControls' :
+			case 'toggleControls' :
+				control = options;
+				break;
+				
+			// get user options
+			case 'destroy' :
+			default :
+				var args = (typeof options === 'object' || !options ) ? options : arguments[1];
+				break;
+		};
 		
 		// loop through supplied elements
 		this.each(function(){
-			
 			// retrieve existing instance
-			var instance = $(this).data('ddGallery');
+			var dd = $(this).data('ddGallery');
 			
-			// destroy instance if exists
-			if (instance) {
-				instance['destroy'].apply( $(this).data('ddGallery') );
-				$(this).removeData('ddGallery');
-			};
+			switch (control) {
 			
-			// (re)create instance?
-			if ( options != 'destroy' ) {
-				$(this).data('ddGallery', new $.ddGallery(this, args));
+				case 'load':
+				case 'reload':
+					
+					// destroy instance if exists
+					if (dd) {
+						dd['destroy'].apply( dd );
+						$(this).removeData('ddGallery');
+					};
+					
+					// (re)create instance?
+					if ( options != 'destroy' ) {
+						$(this).data('ddGallery', new $.ddGallery(this, args));
+					};
+					
+					break;
+					
+				case 'next' :
+					dd['rotateItems'].call(dd, true);					
+					break;
+					
+				case 'last' :
+					dd['rotateItems'].call(dd, false);					
+					break;
+					
+				case 'play' :
+					if (dd.paused || (!dd.settings.rotate && !dd.userPlay)) {
+						dd.userPlay = true;
+						dd.paused = false;
+						if ((!dd.hover || !dd.settings.hoverPause)) {
+							dd.rotator = setTimeout(function(){
+								dd.navSource='auto';
+								dd.rotateItems(true);
+							}, dd.settings.stagePause);
+						};
+					};
+					break;
+					
+				case 'pause' :
+					if (!dd.paused) {
+						clearTimeout(dd.rotator);
+						dd.paused = true;
+						dd.userPlay = false;
+					};
+					break;
+					
+				case 'togglePlay' :
+					if (dd.paused || (!dd.settings.rotate && !dd.userPlay)) {
+						// restart timer
+						if ((!dd.hover || !dd.settings.hoverPause)) {
+							dd.userPlay = true;
+							dd.paused = false;
+							dd.rotator = setTimeout(function(){
+								dd.navSource='auto';
+								dd.rotateItems(true);
+							}, dd.settings.stagePause);
+						};
+					
+					} else if (!dd.paused) {
+						clearTimeout(dd.rotator);
+						dd.paused = true;
+						dd.userPlay = false;
+					};
+					break;
+					
+				case 'fullScreen' :
+					if (dd.settings.fullScreen) {
+						dd.full.click();
+					};
+					break;
+					
+				case 'zoom' :
+					dd.zoom.click();
+					break;
+					
+				case 'hideControls' :
+					if (!dd.pinned) {
+						dd.tab.mouseup();
+					};
+					break;
+				
+				case 'showControls' :
+					if (dd.pinned) {
+						dd.pinned = false;
+						dd.tab.removeClass('pinned');
+						dd.autopinned=false;
+					};
+					dd.moveControls(true, true, dd.settings.controlHideSpeed);
+					break;
+					
+				case 'toggleControls' :
+					if (!dd.pinned) {
+						dd.tab.mouseup();
+					} else {
+						dd.pinned = false;
+						dd.tab.removeClass('pinned');
+						dd.autopinned=false;
+						dd.moveControls(true, true, dd.settings.controlHideSpeed);
+					};
+					break;
+					
 			};
 			
 		});

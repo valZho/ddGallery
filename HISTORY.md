@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.5 :: 2012-04-04
+* + Add external controls: play, pause, playToggle, last, next, zoom, fullScreen, hideControls, showControls, toggleControls
+
 ### v2.4.5 :: 2012-04-02
 * + add use ESC key to exit full screen mode
 * x fix DIV sizing / selection bug
