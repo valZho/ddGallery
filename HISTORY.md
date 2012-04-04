@@ -1,6 +1,10 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.4.5 :: 2012-04-02
+* + add use ESC key to exit full screen mode
+* x fix DIV sizing / selection bug
+
 ### v2.4.4 :: 2012-04-02
 * x fix YouTube API loading w/ Firefox
 

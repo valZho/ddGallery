@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.4.4 :: 2012-04-02
+ * jQuery ddGallery v2.4.5 :: 2012-04-02
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -367,7 +367,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						me.addClass(itemId); // add this id as class to pull content later
 						thumb = me.attr('thumb'); // url to thumbnail
 						cap = me.attr('title'); // caption
-						type = 'div ';
+						type = 'div';
 					
 					// iframe
 					} else if (me.is('iframe')) {
@@ -1067,6 +1067,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							case 39 :
 								dd.navSource = 'right';
 								dd.rotateItems(true);
+								break;
+							
+							// escape
+							case 27 :
+								if (dd.fullScreen) {
+									dd.full.click();
+								};
 								break;
 						};
 					});
