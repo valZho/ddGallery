@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.5 :: 2012-04-04
+ * jQuery ddGallery v2.6 :: 2012-04-05
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -42,21 +42,21 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		};
 
 	// template for the main gallery
-	galleryTpl = '<div class="ddGallery-stage-wrapper" style="width:100%; height:100%;">';
+	galleryTpl = '<div class="ddGallery-stage-wrapper" style="width:100%; height:100%; position:relative; overflow:hidden;">';
 	galleryTpl+= 	'<div class="ddGallery-stage loading" style="width:100%; height:100%;"></div>';
-	galleryTpl+= 	'<div class="ddGallery-count"></div>';
-	galleryTpl+= 	'<div class="ddGallery-toggles">';
-	galleryTpl+= 		'<a href="javascript:;" class="ddGallery-fullScreen"><div><div></div></div></a>';
-	galleryTpl+= 		'<a href="javascript:;" class="ddGallery-zoom"></a>';
-	galleryTpl+= 	'</div>';
-	galleryTpl+= 	'<div class="ddGallery-caption-wrapper" style="position:absolute; bottom:0; overflow:hidden; width:100%; opacity:0">';
-	galleryTpl+= 		'<div class="ddGallery-caption"></div>';
-	galleryTpl+= 	'</div>';
+	galleryTpl+= '</div>';
+	galleryTpl+= '<div class="ddGallery-count"></div>';
+	galleryTpl+= '<div class="ddGallery-toggles">';
+	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-fullScreen"><div><div></div></div></a>';
+	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-zoom"></a>';
 	galleryTpl+= '</div>';
 	galleryTpl+= '<div class="ddGallery-controls" style="position:absolute; bottom:0; overflow:hidden;">';
 	galleryTpl+= 	'<div class="ddGallery-thumbs-wrapper" style="position:relative; width:auto; height:100%; overflow:hidden">';
 	galleryTpl+= 		'<div class="ddGallery-thumbs" style="position:absolute; top:0; left:0; height:100%;"></div>';
 	galleryTpl+= 	'</div>';
+	galleryTpl+= '</div>';
+	galleryTpl+= '<div class="ddGallery-caption-wrapper" style="position:absolute; bottom:0; overflow:hidden; width:100%; opacity:0">';
+	galleryTpl+= 	'<div class="ddGallery-caption"></div>';
 	galleryTpl+= '</div>';
 	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; overflow:hidden;"></div>';
 	
@@ -99,7 +99,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		dd.paused=false;
 		dd.touched=false;
 		dd.fullScreen=false;
-		dd.sH = 0;
 		dd.navSource = '';
 		dd.capSizes = {heights:{},borders:{'t':0,'b':0},margins:{'t':0,'b':0},padding:{'t':0,'b':0}};
 		
@@ -158,6 +157,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		hideThumbsOnFull : false,
 		hideCaptionsOnFull : false,
 		hideCountOnFull : true,
+		hoverPauseOnFull : true,
 		
 		zoom : false,
 		hideZoom : true
@@ -208,9 +208,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			dd.gal.css({
 				'overflow' : 'hidden',
 				'position' : (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position')
-			});
+			}).addClass('ddGallery-main');
 			
 			// store original content
+			dd.origBody = $('body').css('overflow');
 			dd.origData = dd.gal.html();
 			dd.origCSS = {
 				'z-index':dd.gal.css('z-index'),
@@ -233,7 +234,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.tab = dd.gal.find('.ddGallery-control-tab');
 				dd.tabB = parseInt(dd.tab.css('bottom'));
 				dd.count = dd.gal.find('.ddGallery-count');
-				dd.stage = dd.gal.find('.ddGallery-stage');
+				dd.stageWrap = dd.gal.find('.ddGallery-stage-wrapper');
+				dd.stage = dd.stageWrap.children('.ddGallery-stage');
 				dd.thumbWrap = dd.gal.find('.ddGallery-thumbs-wrapper');
 				dd.thumbs = dd.thumbWrap.children('.ddGallery-thumbs');
 				dd.zoom = dd.gal.find('.ddGallery-zoom');
@@ -242,14 +244,14 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				// set layer order
 				dd.mainZ = (dd.gal.css('z-index') == 'auto') ? 0 : parseInt(dd.gal.css('z-index'));
 				dd.gal.find('.ddGallery-stage-wrapper').css({'z-index':dd.mainZ});
-				dd.controls.css({'z-index':dd.mainZ+1});
-				dd.tab.css({'z-index':dd.mainZ+1000});
-				dd.zoom.parent('.ddGallery-toggles').css({'z-index':dd.mainZ+6});
-				if (!dd.settings.externalCaptions) { dd.caption.css({'z-index':dd.mainZ+5}); };
+				dd.controls.css({'z-index':dd.mainZ+5});
+				dd.tab.css({'z-index':dd.mainZ+5});
+				dd.zoom.parent('.ddGallery-toggles').css({'z-index':dd.mainZ+5});
+				dd.caption.css({'z-index':dd.mainZ+5});
 				
 				// set up count
 				if (dd.settings.count) {
-					dd.count.css({'display':'block','z-index':dd.mainZ+6});
+					dd.count.css({'display':'block','z-index':dd.mainZ+3});
 				} else {
 					dd.count.css({'display':'none'});
 				};
@@ -271,7 +273,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				///////////////////
 				// HIDE PIN TAB? //
 				///////////////////
-				if (!dd.settings.pinTab	|| (!dd.settings.captions && !dd.settings.thumbs) || ((dd.settings.controlPush && !dd.settings.hideThumbs) && (!dd.settings.captions || dd.settings.externalCaptions))) {
+				if (!dd.settings.pinTab	|| (!dd.settings.captions && !dd.settings.thumbs) || ((dd.settings.controlPush && !dd.settings.hideThumbs) && !dd.settings.captions)) {
 					dd.tab.css({'display':'none'});
 					dd.settings.pinTab = false;
 				} else {
@@ -392,7 +394,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					thumbContent += '<a href="'+url+'" itemId="'+itemId+'" sourceId="'+sourceId+'" sourceClass="'+sourceClass+'" class="'+type+'" style="display:block;float:left'+thumb+thumbResize+'" title="'+cap+'" linkOut="'+linkOut+'" linkTarget="'+linkTarget+'"><span class="ddGallery-watermark"></span></a>';
 					
 					// get caption size array for animation
-					if (dd.settings.captions && !dd.settings.externalCaptions){
+					if (dd.settings.captions){
 						
 						if (cap=='&nbsp;') {
 							dd.capSizes.heights[itemId] = {'h':0,'o':0};
@@ -553,7 +555,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 						
 						// set stage height
-						dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.stage.height()-dd.controlH : dd.stage.height();
+						dd.stageWrap.height( (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
 						
 						
 					});
@@ -627,7 +629,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									: (dd.curItem < ($(this).index()+1));
 					
 					// set stage height
-					dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.stage.height()-dd.controlH : dd.stage.height();
+					dd.stageWrap.height( (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
 					
 					// update curItem marker
 					dd.curItem = $(this).index()+1;
@@ -736,7 +738,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								//////////
 								case 'div' :
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
-									dd.stage.append('<div class="ddGallery-div-wrapper ddGallery-item" id="'+itemId+'" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:auto"><div class="'+sourceClass+'" id="'+sourceId+'">'+dd.orig.find('.'+itemId).html()+'</div></div>').ready(function(){
+									dd.stage.append('<div class="ddGallery-div-wrapper ddGallery-item" id="'+itemId+'" style="opacity:0;position:absolute;width:100%;height:100%;overflow:auto"><div class="'+sourceClass+'" id="'+sourceId+'">'+dd.orig.find('.'+itemId).html()+'</div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -748,7 +750,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								/////////////
 								case 'iframe' :
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
-									dd.stage.append('<div class="ddGallery-iframe-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:auto" id="'+itemId+'"><iframe style="border:none;width:100%;height:100%;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></iframe></div>').ready(function(){
+									dd.stage.append('<div class="ddGallery-iframe-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:100%;overflow:auto" id="'+itemId+'"><iframe allowfullscreen scrolling="auto" style="border:none;width:100%;height:100%;margin-bottom:-5px;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></iframe></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -761,7 +763,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								/////////////
 								case 'youtube' :
 									dd.showZoom(false, dd.settings.stageRotateSpeed);
-									dd.stage.append('<div class="ddGallery-youtube-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:hidden" id="'+itemId+'"><div id="'+itemId+'-video"></div></div>').ready(function(){
+									dd.stage.append('<div class="ddGallery-youtube-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:100%;overflow:hidden" id="'+itemId+'"><div id="'+itemId+'-video"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -813,7 +815,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 																	if (dd.pinned && dd.autopinned) {
 																		dd.tab.mouseup();
 																	};
-																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.settings.playlist && !dd.paused) {
+																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || (!dd.fullScreen && !dd.settings.hoverPause) || (dd.fullScreen && !dd.settings.hoverPauseOnFull)) && !dd.settings.playlist && !dd.paused) {
 																		clearTimeout(dd.rotator);
 																		dd.rotator = setTimeout(function(){
 																			dd.navSource='auto';
@@ -838,7 +840,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 																	if (dd.pinned && dd.autopinned) {
 																		dd.tab.mouseup();
 																	};
-																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.paused) {
+																	if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || (!dd.fullScreen && !dd.settings.hoverPause) || (dd.fullScreen && !dd.settings.hoverPauseOnFull)) && !dd.paused) {
 																		clearTimeout(dd.rotator);
 																		dd.rotator = setTimeout(function(){
 																			dd.navSource='auto';
@@ -862,7 +864,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								// VIMEO //
 								///////////
 								case 'vimeo' :
-									dd.stage.append('<div class="ddGallery-vimeo-wrapper" style="opacity:0;position:absolute;width:100%;height:'+dd.sH+'px;overflow:hidden" id="'+itemId+'"><iframe style="border:none;width:100%;height:100%;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></div></div>').ready(function(){
+									dd.stage.append('<div class="ddGallery-vimeo-wrapper" style="opacity:0;position:absolute;width:100%;height:100%;overflow:hidden" id="'+itemId+'"><iframe allowfullscreen scrolling="auto" style="border:none;width:100%;height:100%;margin-bottom:-5px;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
 										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -885,7 +887,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in');
 							
 							} else {
-								dd.stage.find('#'+itemId).css({'height':dd.sH});
 								dd.showZoom(false, dd.settings.stageRotateSpeed);
 								dd.stage.removeClass('loading');
 								eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
@@ -915,37 +916,34 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 						
 						
-						//////////////////
-						// LOAD CAPTION //
-						//////////////////
+						///////////////////
+						// LOAD CAPTIONS //
+						///////////////////
+						
+						// external captions?
+						if (dd.settings.externalCaptions) {
+							$(dd.settings.externalCaptions).html('<span class="ddGallery-externalCaptions">'+cap+'</span>');
+						};
+							
+						// built-in captions?
 						if (dd.settings.captions) {
 						
-							// external captions?
-							if (dd.settings.externalCaptions) {
-								dd.caption.css({'display':'none'});
-								$(dd.settings.externalCaptions).html('<span class="ddGallery-externalCaptions">'+cap+'</span>');
+							// add caption
+							dd.caption.attr('itemId',itemId).children('.ddGallery-caption').html(cap).ready(function(){
+								var con=false;
 								
+								// show controller?
+								if (!dd.pinned) {
+									if (dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
 								
-							// built-in captions?
-							} else {
-							
-								// add caption
-								dd.caption.attr('itemId',itemId).children('.ddGallery-caption').html(cap).ready(function(){
-									var con=false;
-									
-									// show controller?
-									if (!dd.pinned) {
-										if (dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
-									
-										// move controls
-										dd.moveControls(con, true, dd.settings.stageRotateSpeed);
-									};
-									
-									// ---CAPTION HIDE TIMER---
-									dd.captionTimer(con);
-								});
-							};
-							
+									// move controls
+									dd.moveControls(con, true, dd.settings.stageRotateSpeed);
+								};
+								
+								// ---CAPTION HIDE TIMER---
+								dd.captionTimer(con);
+							});
+						
 						// hide captions?
 						} else {
 							dd.caption.css({'display':'none'});
@@ -1093,7 +1091,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					dd.hover = true;
 					
 					// stop timers
-					if (dd.settings.hoverPause) { clearTimeout(dd.rotator); };
+					if ( (!dd.fullScreen && dd.settings.hoverPause) || (dd.fullScreen && dd.settings.hoverPauseOnFull) ) { clearTimeout(dd.rotator); };
 					if (dd.captionDelay) { clearTimeout(dd.captionDelay); };
 					
 					// arrow-only controls
@@ -1138,7 +1136,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					dd.hover = false;
 					
 					// restart timers
-					if ((dd.settings.rotate || dd.userPlay) && dd.settings.hoverPause && !dd.videoPlaying && !dd.paused) {
+					if ((dd.settings.rotate || dd.userPlay) && ((!dd.fullScreen && dd.settings.hoverPause) || (dd.fullScreen && dd.settings.hoverPauseOnFull)) && !dd.videoPlaying && !dd.paused) {
 						clearTimeout(dd.rotator);
 						dd.rotator = setTimeout(function(){
 							dd.navSource='auto';
@@ -1259,156 +1257,163 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				////////////////
 				// ZOOM CLICK //
 				////////////////
-				if (dd.settings.zoom) {
-					dd.zoom.on('click', function(e){
-						var image = dd.stage.find('.selected');
+				dd.zoom.on('click', function(e){
+					var image = dd.stage.find('.selected');
+					
+					if ( dd.animating || !image.is('img') ) { return; }
+					
+					// deactivate
+					if (dd.zoom.is('.active')) {
+						dd.zoom.removeClass('active');
+						image.off();
+						dd.setImageDimensions(image, '', '', 'unzoom');
+					
+					// activate
+					} else {
+						dd.zoom.addClass('active');
 						
-						// deactivate
-						if (dd.zoom.is('.active')) {
-							dd.zoom.removeClass('active');
-							image.off();
-							dd.setImageDimensions(image, '', '', 'unzoom');
+						// initialize
+						var sW = dd.stage.width(),
+							sH = dd.stage.height(),
+							iW = dd.imageDimensions[image.attr('id')].o.w,
+							iH = dd.imageDimensions[image.attr('id')].o.h,
 						
-						// activate
-						} else {
-							dd.zoom.addClass('active');
+							// calculate new image position based on cursor
+							tW = Math.floor(sW * .6),
+							tH = Math.floor(sH * .6),
+							tX = Math.floor((sW - tW)/2) + dd.stage.offset().left,
+							tY = Math.floor((sH - tH)/2) + dd.stage.offset().top,
+							x = e.pageX - tX,
+							y = e.pageY - tY;
+						
+						clearTimeout(dd.touchy);
+						
+						x = (e.pageX==undefined) ? Math.floor(tW/2) : (x>tW) ? tW : (x<0) ? 0 : x;
+						y = (e.pageY==undefined) ? Math.floor(tH/2) : (y>tH) ? tH : (y<0) ? 0 : y;
 							
-							// initialize
-							var sW = dd.stage.width(),
-								iW = dd.imageDimensions[image.attr('id')].o.w,
-								iH = dd.imageDimensions[image.attr('id')].o.h,
+						
+						// animate to full size
+						image.animate({
+							'left' : ((iW>sW) ? (-1*Math.ceil((x/tW)*(iW-sW))) : Math.floor((sW-iW)/2) ),
+							'top' : ((iH>sH) ? (-1*Math.ceil((y/tH)*(iH-sH))) : Math.floor((sH-iH)/2)),
+							'width' : iW,
+							'height' : iH							
+						}, dd.settings.controlHideSpeed, function(){
 							
-								// calculate new image position based on cursor
-								tW = Math.floor(sW * .6),
-								tH = Math.floor(dd.sH * .6),
-								tX = Math.floor((sW - tW)/2) + dd.stage.offset().left,
-								tY = Math.floor((dd.sH - tH)/2) + dd.stage.offset().top,
-								x = e.pageX - tX,
-								y = e.pageY - tY;
-							
-							clearTimeout(dd.touchy);
-							
-							x = (e.pageX==undefined) ? Math.floor(tW/2) : (x>tW) ? tW : (x<0) ? 0 : x;
-							y = (e.pageY==undefined) ? Math.floor(tH/2) : (y>tH) ? tH : (y<0) ? 0 : y;
+							// watch mouse movement
+							image.on('mousemove', function(e){
 								
-							
-							// animate to full size
-							image.animate({
-								'left' : ((iW>sW) ? (-1*Math.ceil((x/tW)*(iW-sW))) : Math.floor((sW-iW)/2) ),
-								'top' : ((iH>dd.sH) ? (-1*Math.ceil((y/tH)*(iH-dd.sH))) : Math.floor((dd.sH-iH)/2)),
-								'width' : iW,
-								'height' : iH							
-							}, dd.settings.controlHideSpeed, function(){
-								
-								// watch mouse movement
-								image.on('mousemove', function(e){
+								var tX = Math.floor((sW - tW)/2) + dd.stage.offset().left,
+									tY = Math.floor((sH - tH)/2) + dd.stage.offset().top,
+									x = e.pageX - tX,
+									y = e.pageY - tY;
 									
-									var tX = Math.floor((sW - tW)/2) + dd.stage.offset().left,
-										tY = Math.floor((dd.sH - tH)/2) + dd.stage.offset().top,
-										x = e.pageX - tX,
-										y = e.pageY - tY;
-										
-									// set max and min movement
-									x = (x>tW) ? tW : (x<0) ? 0 : x;
-									y = (y>tH) ? tH : (y<0) ? 0 : y;
-										
+								// set max and min movement
+								x = (x>tW) ? tW : (x<0) ? 0 : x;
+								y = (y>tH) ? tH : (y<0) ? 0 : y;
+									
+								// scroll horizontally
+								if (iW > sW) {
+									image.css({'left':-1*Math.ceil((x/tW)*(iW-sW))});
+								};
+								
+								// scroll vertically
+								if (iH > sH) {
+									image.css({'top':-1*Math.ceil((y/tH)*(iH-sH))});
+								};
+							});
+							
+							// initialize touch
+							image.on('touchstart', function(event) {
+							
+								// stop stage rotation timers
+								clearTimeout(dd.rotator);
+								
+								// hide controls
+								clearTimeout(dd.touchy);
+								dd.touched = false;
+								dd.gal.mouseleave();
+								
+								// stop page from scrolling
+								$(document).on('touchmove', function(event) {
+									var e = event.originalEvent;
+									e.preventDefault();
+								});
+								
+								// get initial touch position
+								var e = event.originalEvent,
+									tStartX = e.touches[0].pageX,
+									tStartY = e.touches[0].pageY,
+									iStartL = parseInt(image.css('left')),
+									iStartT = parseInt(image.css('top'));
+									
+								
+								// watch touchscreen movement
+								image.on('touchmove', function(event){
+									var e = event.originalEvent,
+										x = e.touches[0].pageX,
+										y = e.touches[0].pageY,
+										nL = iStartL + (x - tStartX),
+										nT = iStartT + (y - tStartY);
+									
+									// set min and max values
+									nL = (nL < ((iW-sW)*-1)) ? ((iW-sW)*-1) : (nL > 0) ? 0 : nL;
+									nT = (nT < ((iH-sH)*-1)) ? ((iH-sH)*-1) : (nT > 0) ? 0 : nT;
+									
 									// scroll horizontally
 									if (iW > sW) {
-										image.css({'left':-1*Math.ceil((x/tW)*(iW-sW))});
+										image.css({'left':nL});
 									};
 									
 									// scroll vertically
-									if (iH > dd.sH) {
-										image.css({'top':-1*Math.ceil((y/tH)*(iH-dd.sH))});
+									if (iH > sH) {
+										image.css({'top':nT});
 									};
-								});
-								
-								// initialize touch
-								image.on('touchstart', function(event) {
-								
-									// stop stage rotation timers
-									clearTimeout(dd.rotator);
-									
-									// hide controls
-									clearTimeout(dd.touchy);
-									dd.touched = false;
-									dd.gal.mouseleave();
-									
-									// stop page from scrolling
-									$(document).on('touchmove', function(event) {
-										var e = event.originalEvent;
-										e.preventDefault();
-									});
-									
-									// get initial touch position
-									var e = event.originalEvent,
-										tStartX = e.touches[0].pageX,
-										tStartY = e.touches[0].pageY,
-										iStartL = parseInt(image.css('left')),
-										iStartT = parseInt(image.css('top'));
-										
-									
-									// watch touchscreen movement
-									image.on('touchmove', function(event){
-										var e = event.originalEvent,
-											x = e.touches[0].pageX,
-											y = e.touches[0].pageY,
-											nL = iStartL + (x - tStartX),
-											nT = iStartT + (y - tStartY);
-										
-										// set min and max values
-										nL = (nL < ((iW-sW)*-1)) ? ((iW-sW)*-1) : (nL > 0) ? 0 : nL;
-										nT = (nT < ((iH-dd.sH)*-1)) ? ((iH-dd.sH)*-1) : (nT > 0) ? 0 : nT;
-										
-										// scroll horizontally
-										if (iW > sW) {
-											image.css({'left':nL});
-										};
-										
-										// scroll vertically
-										if (iH > dd.sH) {
-											image.css({'top':nT});
-										};
-									});
-								});
-								
-								// de-initialize touch
-								image.on('touchend', function(event) {
-									$(document).off('touchmove');
-									 
-									// show controls
-									dd.touched = true;
-									dd.gal.mouseenter();
-									dd.touchy = setTimeout(function(){
-										dd.touched = false;
-										dd.gal.mouseleave();
-									}, dd.settings.stagePause/2);
-									
 								});
 							});
 							
-						};
-					});
-				};
+							// de-initialize touch
+							image.on('touchend', function(event) {
+								$(document).off('touchmove');
+								 
+								// show controls
+								dd.touched = true;
+								dd.gal.mouseenter();
+								dd.touchy = setTimeout(function(){
+									dd.touched = false;
+									dd.gal.mouseleave();
+								}, dd.settings.stagePause/2);
+								
+							});
+						});
+						
+					};
+				});
 				
 				///////////////////////
 				// FULL SCREEN CLICK //
 				///////////////////////
-				if (dd.settings.fullScreen) {
-					dd.full.on('click', function(){
-						
-						if (dd.fullScreen) {
-							dd.full.removeClass('active');
-							dd.fullScreen = false;
-							dd.resizeMe(false);
-							
-						} else {
-							dd.full.addClass('active');
-							dd.fullScreen = true;
-							dd.resizeMe(true);
+				dd.full.on('click', function() {
+					
+					// turn off
+					if (dd.fullScreen) {
+						$('body').css({'overflow':dd.origBody});
+						dd.full.removeClass('active');
+						if (!dd.settings.fullScreen) {
+							dd.showFullScreen(false, dd.settings.controlHideSpeed);
 						};
-					});
-				};
+						dd.fullScreen = false;
+						dd.resizeMe(false);
+					
+					// turn on
+					} else {
+						$('body').css({'overflow':'hidden'});
+						dd.full.addClass('active');
+						dd.showFullScreen(true, dd.settings.controlHideSpeed);
+						dd.fullScreen = true;
+						dd.resizeMe(true);
+					};
+				});
 				
 				//------------------------------------
 				
@@ -1500,7 +1505,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			dd.animating = false;
 					
 			// restart timer
-			if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || !dd.settings.hoverPause) && !dd.paused) {
+			if ((dd.settings.rotate || dd.userPlay) && (!dd.hover || (!dd.fullScreen && !dd.settings.hoverPause) || (dd.fullScreen && !dd.settings.hoverPauseOnFull)) && !dd.paused) {
 				dd.rotator = setTimeout(function(){
 					dd.navSource='auto';
 					dd.rotateItems(true);
@@ -1558,7 +1563,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		///////////////////////
 		animOut_pushV : function(item, type, typeFrom, dir) {
 			var dd = this,
-				m=dd.sH,
+				m=dd.stage.height(),
 				nT=(parseInt(item.css('top'))||0);
 			if (dir) { m = m*-1; };
 			item.stop(1,0).animate({'top':nT+m}, dd.settings.stageRotateSpeed, function(){
@@ -1567,7 +1572,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		},
 		animIn_pushV : function(item, type, typeFrom, dir) {
 			var dd = this,
-				m=dd.sH,
+				m=dd.stage.height(),
 				oT=(parseInt(item.css('top'))||0);
 			oT = (oT>m || oT<0)? 0 : oT;
 			if (!dir) { m = m*-1; };
@@ -1699,13 +1704,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					'width':$(window).width(),
 					'height':$(window).height(),
 					'margin':0
-				});
+				}).addClass('fullScreen');
 			} else {
-				dd.gal.css(dd.origCSS);
+				dd.gal.css(dd.origCSS).removeClass('fullScreen');
 			};
 			
 			// set stage height
-			dd.sH = (dd.settings.controlPush || (dd.settings.controlPushOnFull && full)) ? dd.stage.height()-dd.controlH : dd.stage.height();
+			dd.stageWrap.height( (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
 			
 			// reposition tab
 			if (dd.settings.pinTab) {
@@ -1728,14 +1733,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			};
 			
 			// resize current item
-			if ( cur.is('.ddGallery-iframe-wrapper')
-				|| cur.is('.ddGallery-div-wrapper')
-				|| cur.is('.ddGallery-vimeo-wrapper')
-				|| cur.is('.ddGallery-youtube-wrapper')
-				) {
-					cur.css({'height':dd.sH});
-			} else {
-				dd.setImageDimensions (cur, '', '', 'resize');
+			if ( cur.is('img') ) {
+				dd.setImageDimensions(cur, '', '', 'resize');
 			};
 				
 		},
@@ -1770,19 +1769,20 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			iR = iW/iH;
 
 			sW = dd.stage.width();
-			sR = sW/dd.sH;
+			sH = dd.stage.height();
+			sR = sW/sH;
 				
 			// store original dimensions (for zoom)
 			dd.imageDimensions[itemId] = {o:{
 				w : iW,
 				h : iH,
-				z : ((iW>sW)||(iH>dd.sH))
+				z : ((iW>sW)||(iH>sH))
 			},n:{}};
 			
 			// enable image zoom?
 			if (dd.settings.zoom) {
 				dd.zoom.removeClass('active');
-				if (((iH>dd.sH) || (iW>sW)) && dd.settings.zoom && (dd.hover || !dd.settings.hideZoom)) {
+				if (((iH>sH) || (iW>sW)) && dd.settings.zoom && (dd.hover || !dd.settings.hideZoom)) {
 					dd.showZoom(true, dd.settings.stageRotateSpeed);
 				} else {
 					dd.showZoom(false, dd.settings.stageRotateSpeed);
@@ -1792,15 +1792,15 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// should the image be stretched?
 			if (dd.settings.stretch) {
 				iW = sW;
-				iH = dd.sH;
+				iH = sH;
 			
 			
 			// should the image be resized?
-			} else if ( ((iH>dd.sH) || (iW>sW)) || (((iH < dd.sH) && (iW < sW)) && dd.settings.enlarge) ) {
+			} else if ( ((iH>sH) || (iW>sW)) || (((iH < sH) && (iW < sW)) && dd.settings.enlarge) ) {
 				
 				// if stage is wider relative to image, change height first
 				if (sR > iR) {
-					nH = dd.sH;
+					nH = sH;
 					iW = Math.round(iW * (nH/iH));
 					iH = nH;
 												
@@ -1838,7 +1838,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					break;			
 			};
 				
-			image.animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((dd.sH/2)-(iH/2)), 'display':'block'}, speed, function(){
+			image.animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((sH/2)-(iH/2)), 'display':'block'}, speed, function(){
 				if (clickable) { image = image.parent('a'); };
 				if (target=='in') { eval('dd.animIn_'+dd.settings.stageRotateType+'(image,"img",typeFrom,dir);'); };
 			});
@@ -1858,6 +1858,20 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			});
 		},
 
+		///////////////////////////
+		// SHOW/HIDE FULL SCREEN //
+		///////////////////////////
+		showFullScreen : function(show, speed) {
+			var dd = this,
+				s = ((dd.full.css('display')=='block') ? 1 : 0),
+				o = (show?1:0),
+				d = (show?'block':'none');
+			
+			dd.full.css({'display':'block','opacity':s}).animate({'opacity':o}, speed, function(){
+				dd.full.css({'display':d,'opacity':''});
+			});
+		},
+
 		///////////////////
 		// MOVE CONTROLS //
 		///////////////////
@@ -1870,9 +1884,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// move the controller
 			if (con) { conH = dd.controlH; };
 			dd.controls.stop(1,0).animate({'bottom':(conH - dd.controlH)}, speed);
-				
+			
 			// move caption
-			if (dd.settings.captions && !dd.settings.externalCaptions){
+			if (dd.settings.captions){
 				dd.caption.stop(1,0).css({'opacity':1});
 				if (cap & dd.capSizes.heights[id]['h']>0) {
 					capH = dd.capSizes.heights[id]['o'];
@@ -1925,10 +1939,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		///////////////////
 		captionTimer : function(showControls) {
 			var dd = this;
-			if (!dd.pinned && (dd.settings.captions && !dd.settings.externalCaptions) && (dd.settings.hideCaptions && (dd.settings.hideCaptionsOnFull && !dd.fullScreen))) {
+			if (!dd.pinned && dd.settings.captions && ((!dd.fullScreen && dd.settings.hideCaptions) || (dd.fullScreen && dd.settings.hideCaptionsOnFull))) {
 				clearTimeout(dd.captionDelay);
 				dd.captionDelay = setTimeout(function(){
-					dd.moveControls(showControls, false, dd.settings.captionFadeSpeed);						
+					dd.moveControls(showControls, false, dd.settings.captionFadeSpeed);			
 				}, dd.settings.captionPause);
 			};
 		},
@@ -1987,12 +2001,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	/////////////////
 	// PLUGIN CALL //
 	/////////////////
-	$.fn.ddGallery = function(options) { 
+	$.fn.ddGallery = function(options, goTo) { 
 		var control='load';
 		
 		// listen for external controls
 		switch (options) {
 			
+			case 'goTo' :
 			case 'togglePlay' :
 			case 'play' :
 			case 'pause' :
@@ -2005,7 +2020,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			case 'toggleControls' :
 				control = options;
 				break;
-				
+			
 			// get user options
 			case 'destroy' :
 			default :
@@ -2020,8 +2035,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			switch (control) {
 			
-				case 'load':
-				case 'reload':
+				// LOAD OR RELOAD OR DESTROY
+				case 'load' :
+				case 'reload' :
+				case 'destroy' :
 					
 					// destroy instance if exists
 					if (dd) {
@@ -2036,19 +2053,28 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 					break;
 					
+				// GO TO
+				case 'goTo' :
+					goTo = (goTo>dd.itemCount) ? itemCount : (goTo<1) ? 1 : goTo;
+					dd.thumbs.children('a:nth-child('+goTo+')').click();
+					break;
+				
+				// NEXT
 				case 'next' :
 					dd['rotateItems'].call(dd, true);					
 					break;
 					
+				// LAST
 				case 'last' :
 					dd['rotateItems'].call(dd, false);					
 					break;
 					
+				// PLAY
 				case 'play' :
 					if (dd.paused || (!dd.settings.rotate && !dd.userPlay)) {
 						dd.userPlay = true;
 						dd.paused = false;
-						if ((!dd.hover || !dd.settings.hoverPause)) {
+						if ( (!dd.hover || (!dd.fullScreen && !dd.settings.hoverPause) || (dd.fullScreen && !dd.settings.hoverPauseOnFull)) ) {
 							dd.rotator = setTimeout(function(){
 								dd.navSource='auto';
 								dd.rotateItems(true);
@@ -2056,7 +2082,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 					};
 					break;
-					
+				
+				// PAUSE
 				case 'pause' :
 					if (!dd.paused) {
 						clearTimeout(dd.rotator);
@@ -2064,11 +2091,12 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						dd.userPlay = false;
 					};
 					break;
-					
+				
+				// TOGGLE PLAY	
 				case 'togglePlay' :
 					if (dd.paused || (!dd.settings.rotate && !dd.userPlay)) {
 						// restart timer
-						if ((!dd.hover || !dd.settings.hoverPause)) {
+						if ( (!dd.hover || (!dd.fullScreen && !dd.settings.hoverPause) || (dd.fullScreen && !dd.settings.hoverPauseOnFull)) ) {
 							dd.userPlay = true;
 							dd.paused = false;
 							dd.rotator = setTimeout(function(){
@@ -2083,23 +2111,25 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						dd.userPlay = false;
 					};
 					break;
-					
+				
+				// FULL SCREEN	
 				case 'fullScreen' :
-					if (dd.settings.fullScreen) {
-						dd.full.click();
-					};
+					dd.full.click();
 					break;
-					
+				
+				// ZOOM	
 				case 'zoom' :
 					dd.zoom.click();
 					break;
 					
+				// HIDE CONTROLS
 				case 'hideControls' :
 					if (!dd.pinned) {
 						dd.tab.mouseup();
 					};
 					break;
 				
+				// SHOW CONTROLS
 				case 'showControls' :
 					if (dd.pinned) {
 						dd.pinned = false;
@@ -2108,7 +2138,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					};
 					dd.moveControls(true, true, dd.settings.controlHideSpeed);
 					break;
-					
+				
+				// TOGGLE CONTROLS	
 				case 'toggleControls' :
 					if (!dd.pinned) {
 						dd.tab.mouseup();

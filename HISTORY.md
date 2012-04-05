@@ -1,6 +1,17 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.6 :: 2012-04-05
+* + Add external control: goTo
+* + rewrite stage drawing so that contents do not overlap controller on controlPush
+* + rewrite caption drawing, external and internal captions can now be enabled independently of each other
+* + add fullScreen class toggle to main element to target gallery during fullscreen (specifically: need to add background during fullscreen)
+* + additions / improvements to the default CSS file
+* x set body to overflow:hidden on fullscreen to remove scroll bars and prevent background scrolling
+* x fix layering of elements for new stage drawing method & full screen issues
+* x fix zoom and fullScreen external controls to work when those controllers are hidden in gallery
+* x fix iframe double scroll bar
+
 ### v2.5 :: 2012-04-04
 * + Add external controls: play, pause, playToggle, last, next, zoom, fullScreen, hideControls, showControls, toggleControls
 

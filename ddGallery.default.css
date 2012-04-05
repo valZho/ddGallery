@@ -1,3 +1,7 @@
+/* ---===###|[ GALLERY ]|###===--- */
+.ddGallery-main.fullScreen {
+	background: #fff;
+}
 
 /* ---===###|[ STAGE ]|###===--- */
 .ddGallery-stage-wrapper {
@@ -346,7 +350,7 @@
 }
 
 .ddGallery-thumbs a {
-	background: #333 center center no-repeat;
+	background: #000 center center no-repeat;
 	border: solid #333 2px;
 	border-radius: 7px;
 	margin: 5px 2px;
