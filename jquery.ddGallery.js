@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.6.1 :: 2012-04-05
+ * jQuery ddGallery v2.6.2 :: 2012-04-05
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -947,7 +947,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								
 								// show controller?
 								if (!dd.pinned) {
-									if (dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
+									if ( dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen)) ) { con = true; };
 								
 									// move controls
 									dd.moveControls(con, true, dd.settings.stageRotateSpeed);
@@ -1178,7 +1178,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					if (!dd.pinned) {
 						
 						// show controller?
-						if (dd.settings.thumbs && (!dd.settings.hideThumbs || (!dd.settings.hideThumbsOnFull && dd.fullScreen))) { con = true; };
+						if ( dd.settings.thumbs && ((!dd.fullScreen && !dd.settings.hideThumbs) || (dd.fullScreen && !dd.settings.hideThumbsOnFull))) { con = true; };
 					
 						// move controls
 						dd.moveControls(con, true, dd.settings.controlHideSpeed);
@@ -1456,7 +1456,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							dd.touched=false;
 							
 							// don't pin the controls?
-							if (dd.settings.thumbs && (!dd.settings.hideThumbs || (dd.settings.controlPushOnFull && dd.fullScreen))) { con=true; };
+							if ( dd.settings.thumbs && ((!dd.fullScreen && dd.settings.controlPush && !dd.settings.hideThumbs) || (dd.fullScreen && dd.settings.controlPushOnFull)) ) { con=true; };
 							
 							// move the controls
 							dd.moveControls(con, false, dd.settings.controlHideSpeed);

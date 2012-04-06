@@ -1,8 +1,11 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.6.2 :: 2012-04-05
+* x fix: pin tab function bugs with full screen
+
 ### v2.6.1 :: 2012-04-05
-* x add: startItem option (select initial item to load)
+* + add: startItem option (select initial item to load)
 * x fix: watch for mouse hover on startup 
 
 ### v2.6 :: 2012-04-05
