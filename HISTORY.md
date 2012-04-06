@@ -1,8 +1,12 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v2.6.1 :: 2012-04-05
+* x add: startItem option (select initial item to load)
+* x fix: watch for mouse hover on startup 
+
 ### v2.6 :: 2012-04-05
-* + Add external control: goTo
+* + add external control: goTo
 * + rewrite stage drawing so that contents do not overlap controller on controlPush
 * + rewrite caption drawing, external and internal captions can now be enabled independently of each other
 * + add fullScreen class toggle to main element to target gallery during fullscreen (specifically: need to add background during fullscreen)
@@ -13,7 +17,7 @@ Author: Darren Doyle
 * x fix iframe double scroll bar
 
 ### v2.5 :: 2012-04-04
-* + Add external controls: play, pause, playToggle, last, next, zoom, fullScreen, hideControls, showControls, toggleControls
+* + add external controls: play, pause, playToggle, last, next, zoom, fullScreen, hideControls, showControls, toggleControls
 
 ### v2.4.5 :: 2012-04-02
 * + add use ESC key to exit full screen mode

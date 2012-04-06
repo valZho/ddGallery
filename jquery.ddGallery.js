@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.6 :: 2012-04-05
+ * jQuery ddGallery v2.6.1 :: 2012-04-05
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -133,6 +133,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		
 		arrows : true,
 		
+		startItem : 1,
+		
 		keyboard : true,
 		
 		thumbs : true,
@@ -197,6 +199,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				default:
 					dd.settings.stageRotateType = 'fade';			
 			};
+			
+			// start item sanity check
+			dd.settings.startItem = parseInt(dd.settings.startItem);
+			dd.settings.startItem = (dd.settings.startItem>dd.itemCount) ? dd.itemCount : (dd.settings.startItem<1) ? 1 : dd.settings.startItem;
 			
 			// playlist mode?
 			if (dd.settings.playlist) {
@@ -567,7 +573,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					// LOAD INITIAL ITEM //
 					///////////////////////
 					dd.gal.ready(function(){
-						dd.gal.find('.ddGallery-thumbs a:first-child').click();
+						dd.gal.find('.ddGallery-thumbs a:nth-child('+dd.settings.startItem+')').click();
 											
 						// arrows only?
 						if (!dd.settings.thumbs) {
@@ -592,6 +598,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						if (dd.settings.pinned && dd.settings.pinTab) {
 							dd.tab.mouseup();
 						};
+						
+						// LISTEN FOR MOUSE MOVE
+						// trigger mouseenter if mouse already inside element on load
+						dd.gal.on('mousemove', function(){
+							dd.gal.mouseenter();
+							dd.gal.off('mousemove');
+						});
 						
 					});
 				});
@@ -1782,7 +1795,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// enable image zoom?
 			if (dd.settings.zoom) {
 				dd.zoom.removeClass('active');
-				if (((iH>sH) || (iW>sW)) && dd.settings.zoom && (dd.hover || !dd.settings.hideZoom)) {
+				if ( ((iH>sH) || (iW>sW)) && (dd.hover || !dd.settings.hideZoom) ) {
 					dd.showZoom(true, dd.settings.stageRotateSpeed);
 				} else {
 					dd.showZoom(false, dd.settings.stageRotateSpeed);
