@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v2.6.2 :: 2012-04-05
+ * jQuery ddGallery v3.0 :: 2012-04-16
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -41,34 +41,48 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			firstScript.parentNode.insertBefore(newTag, firstScript);
 		};
 
-	// template for the main gallery
+	///////////////////////////
+	// MAIN GALLERY TEMPLATE //
+	///////////////////////////
+	// stage
 	galleryTpl = '<div class="ddGallery-stage-wrapper" style="width:100%; height:100%; position:relative; overflow:hidden;">';
 	galleryTpl+= 	'<div class="ddGallery-stage loading" style="width:100%; height:100%;"></div>';
 	galleryTpl+= '</div>';
+	
+	// count
 	galleryTpl+= '<div class="ddGallery-count"></div>';
+	
+	// zoom and fullscreen
 	galleryTpl+= '<div class="ddGallery-toggles">';
 	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-fullScreen"><div><div></div></div></a>';
 	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-zoom"></a>';
 	galleryTpl+= '</div>';
+	
+	// thumb controller
 	galleryTpl+= '<div class="ddGallery-controls" style="position:absolute; bottom:0; overflow:hidden;">';
 	galleryTpl+= 	'<div class="ddGallery-thumbs-wrapper" style="position:relative; width:auto; height:100%; overflow:hidden">';
 	galleryTpl+= 		'<div class="ddGallery-thumbs" style="position:absolute; top:0; left:0; height:100%;"></div>';
 	galleryTpl+= 	'</div>';
 	galleryTpl+= '</div>';
+	
+	// dot navigation
+	galleryTpl+= '<div class="ddGallery-dotNav"></div>';
+
+	// captions
 	galleryTpl+= '<div class="ddGallery-caption-wrapper" style="position:absolute; bottom:0; overflow:hidden; width:100%; opacity:0">';
 	galleryTpl+= 	'<div class="ddGallery-caption"></div>';
 	galleryTpl+= '</div>';
-	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; overflow:hidden;"></div>';
-	
-	// template for left & right arrows
-	arrowTpl = '<a class="ddGallery-arrows ddGallery-arrow-left" style="position:absolute; display:block; height:100%; top:0; left:0; overflow:hidden;" href="javascript:;">';
-	arrowTpl+= 		'<span class="circle" style="position:absolute; width:0; height:0; border-radius:100px; display:none;"></span>';
-	arrowTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0; display:none;"></span>';
-	arrowTpl+= '</a>';
-	arrowTpl+= '<a class="ddGallery-arrows ddGallery-arrow-right" style="position:absolute; display:block; height:100%; top:0; right:0; overflow:hidden;" href="javascript:;">';
-	arrowTpl+= 		'<span class="circle" style="position:absolute; width:0; height:0; border-radius:100px; display:none;"></span>';
-	arrowTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0; display:none;"></span>';
-	arrowTpl+= '</a>';
+
+	// pin tab
+	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; bottom:0; overflow:hidden;"></div>';
+
+	// arrows
+	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-left" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="javascript:;">';
+	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
+	galleryTpl+= '</a>';
+	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-right" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="javascript:;">';
+	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
+	galleryTpl+= '</a>';
 
 	
 ////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +136,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		captionPause : 2000,
 		hideCaptions : true,
 		
-		count : true,
+		count : false,
 		countType : 'total',
 		hideCount : true,
 		
@@ -132,6 +146,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		autoPlay : false,
 		
 		arrows : true,
+		hideArrows : true,
 		
 		startItem : 1,
 		
@@ -139,6 +154,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		
 		thumbs : true,
 		hideThumbs : true,
+		
+		dotNav : false,
 		
 		controlHideSpeed : 150,
 		controlScrollSpeed : 350,
@@ -183,7 +200,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.settings.thumbs = false;
 				dd.settings.arrows = false;
 				dd.settings.count = false;
-				dd.settings.stageRotateSpeed = 250;
 			};
 			
 			// animation sanity check
@@ -212,7 +228,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			// set css value(s) on main container
 			dd.gal.css({
-				'overflow' : 'hidden',
 				'position' : (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position')
 			}).addClass('ddGallery-main');
 			
@@ -233,6 +248,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// populate current gallery with requisite html structure
 			dd.gal.html(galleryTpl).ready(function(){
 				var thumbContent='';
+					dotContent='';
 				
 				// get objects
 				dd.caption = dd.gal.find('.ddGallery-caption-wrapper');
@@ -246,46 +262,58 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.thumbs = dd.thumbWrap.children('.ddGallery-thumbs');
 				dd.zoom = dd.gal.find('.ddGallery-zoom');
 				dd.full = dd.gal.find('.ddGallery-fullScreen');
+				dd.dot = dd.gal.find('.ddGallery-dotNav');
 				
 				// set layer order
 				dd.mainZ = (dd.gal.css('z-index') == 'auto') ? 0 : parseInt(dd.gal.css('z-index'));
 				dd.gal.find('.ddGallery-stage-wrapper').css({'z-index':dd.mainZ});
+				dd.gal.find('.ddGallery-arrows').css({'z-index':dd.mainZ+5});
 				dd.controls.css({'z-index':dd.mainZ+5});
 				dd.tab.css({'z-index':dd.mainZ+5});
 				dd.zoom.parent('.ddGallery-toggles').css({'z-index':dd.mainZ+5});
 				dd.caption.css({'z-index':dd.mainZ+5});
 				
-				// set up count
+				///////////////////////////
+				// BUTTON INITIALIZATION //
+				///////////////////////////
+				
+				// SET UP DOT NAV
+				if (dd.settings.dotNav) {
+					dd.dot.css({'display':'block','z-index':dd.mainZ+7});
+				} else {
+					dd.dot.css({'display':'none'});
+				};
+				
+				// SET UP COUNT
 				if (dd.settings.count) {
 					dd.count.css({'display':'block','z-index':dd.mainZ+3});
 				} else {
 					dd.count.css({'display':'none'});
 				};
 				
-				// set up zoom toggle
+				// SET UP ZOOM TOGGLE
 				if (dd.settings.zoom) {
 					dd.zoom.css({'display':'none','opacity':0});
 				} else {
 					dd.zoom.css({'display':'none'});
 				};
 				
-				// set up full screen toggle
+				// SET UP FULL SCREEN TOGGLE
 				if (dd.settings.fullScreen) {
 					dd.full.css({'display':'block','opacity':1});
 				} else {
 					dd.full.css({'display':'none'});
 				};
 				
-				///////////////////
-				// HIDE PIN TAB? //
-				///////////////////
+				// SET UP PIN TAB
 				if (!dd.settings.pinTab	|| (!dd.settings.captions && !dd.settings.thumbs) || ((dd.settings.controlPush && !dd.settings.hideThumbs) && !dd.settings.captions)) {
 					dd.tab.css({'display':'none'});
 					dd.settings.pinTab = false;
 				} else {
 					// position tab
 					dd.tab.css({
-						'left' : Math.floor(dd.stage.width()/2) - Math.floor(dd.tab.outerWidth()/2)
+						'left' : Math.floor(dd.stage.width()/2) - Math.floor(dd.tab.outerWidth()/2),
+						'top' : 'auto'
 					});
 				};
 				
@@ -399,6 +427,11 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					// append item to html
 					thumbContent += '<a href="'+url+'" itemId="'+itemId+'" sourceId="'+sourceId+'" sourceClass="'+sourceClass+'" class="'+type+'" style="display:block;float:left'+thumb+thumbResize+'" title="'+cap+'" linkOut="'+linkOut+'" linkTarget="'+linkTarget+'"><span class="ddGallery-watermark"></span></a>';
 					
+					// create dot nav?
+					if (dd.settings.dotNav) {
+						dotContent += '<a href="javascript:;"></a>';
+					};
+					
 					// get caption size array for animation
 					if (dd.settings.captions){
 						
@@ -430,6 +463,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				////////////////
 				
 				// add thumbs (thumbs required for function, even if not shown)
+				dd.dot.html(dotContent);
 				dd.thumbs.append(thumbContent).ready(function(){
 
 					// show thumbs?
@@ -450,148 +484,66 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						dd.thumbWrap.css({'display':'none'});
 						
 						// controller height
-						dd.controlH = parseInt(dd.stage.height()); // controller height
+						dd.controlH = 0;
 						
 						// caption position
 						dd.caption.css({'bottom':0});
 						
 					};
 						
+					
 					//////////////////
 					// BUILD ARROWS //
 					//////////////////
+					dd.positionArrows();
 					
-					// set arrow sizes and visibility
-					if (dd.settings.arrows) {
-						
-						// add arrows to the right place in the template
-						if (dd.settings.thumbs) {
-							dd.controls.append(arrowTpl);
-						} else {
-							dd.gal.append(arrowTpl);
-						};
-					
-					} else {
-						dd.gal.find('.ddGallery-arrows').css({'display':'none'});
-					};
-					
-					// wait until DOM is ready
-					dd.gal.ready(function(){
-						
-						// set layer order
-						dd.gal.find('.ddGallery-arrows').css({'z-index':dd.mainZ+2});
-						dd.gal.find('.ddGallery-arrows .circle').css({'z-index':dd.mainZ+3});
-						dd.gal.find('.ddGallery-arrows .arrow').css({'z-index':dd.mainZ+4});
-			
-						// build circles
-						dd.navW = dd.gal.find('.ddGallery-arrows').width(); // get width of nav buttons
-						dd.circleSize = (dd.navW < dd.controlH) ? dd.navW : dd.controlH; // get smaller of width vs height
-						dd.circleSize = Math.floor(dd.circleSize * 0.75); // set to 75% of smallest
-						
-						// only show circles with thumbs
-						if (dd.settings.thumbs) {
-							dd.gal.find('.ddGallery-arrows .circle').css({
-								'width' : dd.circleSize,
-								'height' : dd.circleSize,
-								'top' : Math.floor((dd.controlH/2)-(dd.circleSize/2)),
-								'left' : Math.floor((dd.navW/2)-(dd.circleSize/2))
-							});
-						} else {
-							dd.gal.find('.ddGallery-arrows .circle').css({
-								'display' : 'none'
-							});
-						};
-												
-						// build arrows
-						dd.arrowW = Math.ceil(dd.circleSize * 0.6); // arrow width
-						dd.arrowH = Math.ceil((dd.arrowW * 1.1)/2); // arrow height
-						
-						dd.gal.find('.ddGallery-arrows .arrow').css({
-							'top' : Math.floor((dd.controlH/2)-(dd.arrowH)),
-							'left' : Math.floor(((dd.navW/2)-(dd.arrowW/2))-(dd.arrowW*0.1)),
-							'border-left-width' : '0',
-							'border-top' : 'solid transparent '+dd.arrowH+'px',
-							'border-bottom' : 'solid transparent '+dd.arrowH+'px',
-							'border-right' : 'solid #fff '+dd.arrowW+'px'
-						});
-						
-						dd.gal.find('.ddGallery-arrow-right .arrow').css({
-							'left' : Math.floor(((dd.navW/2)-(dd.arrowW/2))+(dd.arrowW*0.1)),
-							'border-right' : 'solid 0 transparent',
-							'border-left' : 'solid #fff '+dd.arrowW+'px'
-						});
-						
-						// get full nav button width
-						dd.navW = dd.gal.find('.ddGallery-arrows').outerWidth();
+					//////////////////////
+					// BUILD CONTROLLER //
+					//////////////////////
+					if (dd.settings.thumbs) {
 
-						// arrows only?
-						if (!dd.settings.thumbs) {
-							dd.gal.find('.ddGallery-arrows').addClass('active nothumbs').children('.arrow').css({'display':'block'});
-							dd.controlH = 0;
-							
-							
-						//////////////////////
-						// BUILD CONTROLLER //
-						//////////////////////
-						} else {
+						// set controller dimensions
+						dd.controlH = dd.controls.css({
+							'width' : '100%',
+							'height' : dd.controlH,
+						}).outerHeight();
 						
-							// set controller dimensions
-							dd.controlH = dd.controls.css({
-								'width' : '100%',
-								'height' : dd.controlH,
-								'display' : ((dd.settings.thumbs) ? 'block' : 'none')
-							}).outerHeight();
-							
-							
-							// set thumb outer wrapper margins
-							dd.thumbWrap.css({'margin' : ('0 '+dd.navW+'px')});
-							
-							// set thumb container width
-							dd.thumbs.css({'width' : (dd.thumbW * dd.itemCount)});
-							
-							// if the thumb container is wider than the thumb wrapper then activate arrows
-							if (dd.thumbs.width() > dd.thumbWrap.width()) {
-								dd.gal.find('.ddGallery-arrow-right').addClass('active').children('span').css({'display':'block'});
-							
-								// set maximum scroll on thumbs
-								dd.maxScroll = (dd.thumbs.outerWidth() - dd.thumbWrap.outerWidth()) * -1;
-							};
-							
-																						
-						};
+						// set thumb container width
+						dd.thumbs.css({'width' : (dd.thumbW * dd.itemCount)});
 						
-						// set stage height
-						dd.stageWrap.height( (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
+						// set thumbs max scroll
+						dd.maxScroll = dd.thumbWrap.outerWidth() - dd.thumbs.outerWidth();
 						
+					};
 						
-					});
+					// set stage height
+					dd.stageWrap.height( (dd.settings.controlPush || (dd.settings.controlPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
 					
 					
-					
-										
 					///////////////////////
 					// LOAD INITIAL ITEM //
 					///////////////////////
 					dd.gal.ready(function(){
 						dd.gal.find('.ddGallery-thumbs a:nth-child('+dd.settings.startItem+')').click();
 											
-						// arrows only?
-						if (!dd.settings.thumbs) {
-							dd.gal.find('.ddGallery-arrows').stop(1,0).animate({'opacity':0}, dd.settings.controlHideSpeed);
+						// hide/show arrows?
+						if (!dd.settings.hideArrows) {
+							dd.gal.find('.ddGallery-arrows').css({'opacity':1});
+						};
 						
 						// hide the thumbs?
-						} else if (dd.settings.hideThumbs) {
-							dd.controls.css({'bottom':(-1 * dd.controlH)});
+						if (dd.settings.hideThumbs) {
+							dd.thumbWrap.css({'bottom':(-1 * dd.controlH)});
 						};
 						
 						// set initial caption position
 						if (dd.settings.captions) {
-							dd.caption.css({'height':0,'bottom': ((dd.settings.hideThumbs || !dd.settings.thumbs)?0:dd.controlH) }).addClass('collapsed');
+							dd.caption.css({'height':0,'bottom': ((dd.settings.hideThumbs || !dd.settings.thumbs) ? 0 : dd.controlH) }).addClass('collapsed');
 						};
 						
 						// set initial tab position
 						if (dd.settings.pinTab) {
-							dd.tab.css({'bottom': dd.tabB + ((dd.settings.hideThumbs)?0:dd.controlH)});
+							dd.tab.css({'bottom': dd.tabB + ((!dd.settings.thumbs || dd.settings.hideThumbs) ? 0 : dd.controlH)});
 						};
 						
 						// start pinned?
@@ -631,6 +583,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						tL = parseInt(dd.thumbs.css('left')),
 						thumbL = parseInt(thisThumb.position().left) - (parseInt(thisThumb.css('border-left-width'))) - (parseInt(thisThumb.css('margin-left'))),
 						newLeft,
+						wW,
 						isLast = false,
 						dir = (dd.curItem==1
 							&& ($(this).index()+1)==dd.itemCount
@@ -652,9 +605,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					if (dd.navSource == 'left' && dd.itemCount < 3) { dir = !dir; }
 					dd.navSource = '';
 					
-					// deselect all thumbs
-					thisThumb.siblings('a').removeClass('selected');
-					
 					// waiting for YouTube API to load?
 					if (type=='youtube' && window.ddGalleryWaitForYoutube) {
 						setTimeout(function(){
@@ -666,9 +616,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					// item is not already selected or animating
 					if ( !($(this).is('.selected') || dd.animating) ) {
 					
-						// initialize width
-						dd.wW = dd.thumbWrap.width();
-						
 						// clean up caption
 						cap = (cap == 'undefined') ? '' : cap;			
 						
@@ -697,6 +644,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						// highlight and tag the current selection
 						thisThumb.siblings('a').removeClass('selected');
 						thisThumb.addClass('selected');
+						dd.dot.children('a').removeClass('selected');
+						dd.dot.children('a:nth-child('+dd.curItem+')').addClass('selected');
 						
 						// add loading class to stage
 						dd.stage.addClass('loading');
@@ -706,13 +655,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							eval('dd.animOut_'+dd.settings.stageRotateType+'(dd.stage.find(".selected"),type,typeFrom,dir);');
 						};
 						
-						// adjust height of arrows-only for youtube video
-						if (!dd.settings.thumbs && type=='youtube'){
-							dd.gal.find('.ddGallery-arrows').css({'height': dd.stage.height() - 35});
-						} else {
-							dd.gal.find('.ddGallery-arrows').css({'height':'100%'});
-						};
-							
+						
 						///////////////////////////
 						// CONTENT TYPE HANDLING //
 						///////////////////////////
@@ -938,66 +881,68 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							$(dd.settings.externalCaptions).html('<span class="ddGallery-externalCaptions">'+cap+'</span>');
 						};
 							
-						// built-in captions?
-						if (dd.settings.captions) {
-						
-							// add caption
-							dd.caption.attr('itemId',itemId).children('.ddGallery-caption').html(cap).ready(function(){
-								var con=false;
+						// add caption
+						dd.caption.attr('itemId',itemId).children('.ddGallery-caption').html(cap).ready(function(){
+							var showCon=false;
+								showCap=false;
 								
-								// show controller?
-								if (!dd.pinned) {
-									if ( dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen)) ) { con = true; };
+							// show controller?
+							if (!dd.pinned) {
+								if ( dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen)) ) { showCon = true; };
 								
-									// move controls
-									dd.moveControls(con, true, dd.settings.stageRotateSpeed);
-								};
+								if (dd.settings.captions && cap) { showCap = true; }
+									
+								// move controls
+								dd.moveControls(showCon, showCap, dd.settings.stageRotateSpeed);
 								
-								// ---CAPTION HIDE TIMER---
-								dd.captionTimer(con);
-							});
-						
-						// hide captions?
-						} else {
-							dd.caption.css({'display':'none'});
-							dd.tab.css({'bottom': dd.tabB + (dd.controlH + parseInt(dd.controls.css('bottom')))});
-						};
-							
-						
-						////////////////////////////
-						// THUMBNAILS AUTO-SCROLL //
-						////////////////////////////
-						if (dd.settings.thumbs){
-							
-							// thumbnail is off screen to the right
-							if ( (thumbL + dd.thumbW) > dd.wW - tL) {
-								newLeft = (dd.maxScroll > (thumbL*-1)) ? dd.maxScroll : (thumbL*-1);
-								dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed, function(){
-									// Hide / show arrows
-									if (dd.settings.arrows) {
-										dd.arrowDisplay();
-									};
-								});
-								
-							// thumbnail is off screen to the left
-							} else if ( (thumbL*-1) > tL ) {
-								
-								newLeft = 0 - thumbL;
-								dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed, function(){
-									// Hide / show arrows
-									if (dd.settings.arrows) {
-										dd.arrowDisplay();
-									};
-								});
 								
 							};
+						
+							// ---CAPTION HIDE TIMER---
+							if (showCap) { dd.captionTimer(showCon); };
+						});
+						
+					};
+					
+					////////////////////////////
+					// THUMBNAILS AUTO-SCROLL //
+					////////////////////////////
+					if (dd.settings.thumbs){
+						
+						// initialize width
+						wW = dd.thumbWrap.width();
+						
+						// thumbnail is off screen to the right
+						if ( (thumbL + dd.thumbW + tL) > wW ) {
+							
+							dd.debug.html('thumb right:'+(thumbL + dd.thumbW + tL)+' wW:'+wW);
+							
+							newLeft = wW - (thumbL + dd.thumbW + parseInt(dd.thumbs.css('padding-left')))
+							newLeft = (newLeft < dd.maxScroll) ? dd.maxScroll : (newLeft > 0) ? 0 : newLeft;
+							dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed);
+							
+						// thumbnail is off screen to the left
+						} else if ( (thumbL + tL) < 0 ) {
+							dd.debug.html('thumb left:'+(thumbL + tL)+' wW:'+wW);
+							
+							newLeft = 0 - thumbL;
+							dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed);
 							
 						};
+						
 						
 						
 					};
+					
 				});
 					
+				//////////////////
+				// DOTNAV CLICK //
+				//////////////////
+				dd.gal.find('.ddGallery-dotNav a').on('click', function(){
+					dd.thumbs.children('a:nth-child('+($(this).index()+1)+')').click();
+				});
+				
 				//------------------------------------
 				
 				///////////////////////////
@@ -1005,28 +950,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				///////////////////////////
 				dd.gal.on('click', '.ddGallery-arrow-left', function(e){
 					e.preventDefault();
-					
-					if (dd.settings.thumbs) {
-						var tL = parseInt(dd.thumbs.css('left')),
-							newLeft, c;
-							
-						// calculate new left -- move by width of wrapper
-						c = Math.ceil(dd.wW/dd.thumbW) - 1; // number of full thumbnails visible at once
-						if(c<1){c=1}; // sanity check
-						newLeft = tL+(c*dd.thumbW);
-						newLeft = (newLeft>0) ? 0 : newLeft; // sanity check
-						dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed, function(){
-							// Hide / show arrows
-							if (dd.settings.arrows) {
-								dd.arrowDisplay();
-							};
-						});
-					
-					// arrows only?
-					} else {
-						dd.navSource = 'left';
-						dd.rotateItems(false);
-					};
+					dd.navSource = 'left';
+					dd.rotateItems(false);
 				});
 				
 				////////////////////////////
@@ -1034,29 +959,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				////////////////////////////
 				dd.gal.on('click', '.ddGallery-arrow-right', function(e){
 					e.preventDefault();
-					
-					if (dd.settings.thumbs) {
-						var tL = parseInt(dd.thumbs.css('left')),
-							newLeft, c;
-							
-						// calculate new left
-						c = Math.ceil(dd.wW/dd.thumbW)-1; // number of full thumbnails visible at once
-						if(c<1){c=1}; // sanity check
-						newLeft = tL-(c*dd.thumbW);
-						newLeft = (newLeft < dd.maxScroll) ? dd.maxScroll : newLeft;
-						dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.controlScrollSpeed, function(){
-							// Hide / show arrows
-							if (dd.settings.arrows) {
-								dd.arrowDisplay();
-							};
-						});
-												
-					// arrows only?
-					} else {
-						dd.navSource = 'right';
-						dd.rotateItems(true);
-					};
-						
+					dd.navSource = 'right';
+					dd.rotateItems(true);
 				});
 				
 				//------------------------------------
@@ -1095,9 +999,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				
 				//------------------------------------
 				
-				/////////////////
-				// MOUSE ENTER //
-				/////////////////
+				//////////////////////////
+				// MOUSE ENTER: Gallery //
+				//////////////////////////
 				dd.gal.on('mouseenter', function(){
 					var con=false, rs=false;
 					
@@ -1107,8 +1011,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					if ( (!dd.fullScreen && dd.settings.hoverPause) || (dd.fullScreen && dd.settings.hoverPauseOnFull) ) { clearTimeout(dd.rotator); };
 					if (dd.captionDelay) { clearTimeout(dd.captionDelay); };
 					
-					// arrow-only controls
-					if (!dd.settings.thumbs && dd.settings.arrows) {
+					// show arrows?
+					if (dd.settings.arrows) {
 						dd.gal.find('.ddGallery-arrows').stop(1,0).animate({'opacity':1}, dd.settings.controlHideSpeed);
 					};
 					
@@ -1139,9 +1043,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 				});
 				
-				/////////////////
-				// MOUSE LEAVE //
-				/////////////////
+				//////////////////////////
+				// MOUSE LEAVE: Gallery //
+				//////////////////////////
 				dd.gal.on('mouseleave', function(){
 					var con=false;
 					
@@ -1157,8 +1061,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						}, dd.settings.stagePause);
 					};
 					
-					// arrow-only controls
-					if (!dd.settings.thumbs && dd.settings.arrows) {
+					// hide arrows?
+					if (dd.settings.arrows && dd.settings.hideArrows) {
 						dd.gal.find('.ddGallery-arrows').stop(1,0).animate({'opacity':0}, dd.settings.controlHideSpeed);
 					};
 					
@@ -1192,7 +1096,41 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 					
 				});
+				
+				/////////////////////////
+				// MOUSE ENTER: Thumbs //
+				/////////////////////////
+				dd.thumbWrap.on('mouseover', function(){
+					var pad = 50,
+						wX = dd.thumbWrap.offset().left,
+						wW = dd.thumbWrap.width();
+						
+					wX += pad;
+					wW -= (pad*2);
+						
+					if (dd.maxScroll<0) {
+							
+						dd.thumbWrap.on('mousemove', function(e){
+						
+							var x = e.pageX - wX;
+								nL = Math.ceil((x/wW)*dd.maxScroll);
+							
+							// sanity check
+							nL = (nL<dd.maxScroll) ? dd.maxScroll : (nL>0) ? 0 : nL;
 
+							dd.thumbs.css({'left':nL});
+						
+						});								
+					};
+				});
+				
+				/////////////////////////
+				// MOUSE LEAVE: Thumbs //
+				/////////////////////////
+				dd.gal.on('mouseenter', function(){
+					dd.thumbWrap.off('mousemove');
+				});
+	
 				//------------------------------------
 						
 				///////////////
@@ -1229,9 +1167,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 								
 				//------------------------------------
 				
-				/////////////////
-				// THUMB SWIPE //
-				/////////////////
+				/////////////////////////
+				// THUMB SWIPE: Thumbs //
+				/////////////////////////
 				if (dd.settings.thumbs) {
 					dd.thumbs.on('touchstart', function(event) {
 						clearTimeout(dd.touchy);
@@ -1425,6 +1363,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						dd.showFullScreen(true, dd.settings.controlHideSpeed);
 						dd.fullScreen = true;
 						dd.resizeMe(true);
+						dd.thumbs.css({'left':0});
 					};
 				});
 				
@@ -1733,12 +1672,14 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			};
 			
 			// reset thumb max scroll
-			if (dd.settings.thumbs && dd.settings.arrows) {
-				dd.maxScroll = (dd.thumbs.outerWidth() - dd.thumbWrap.outerWidth()) * -1;
+			if (dd.settings.thumbs) {
+				dd.maxScroll = dd.thumbWrap.outerWidth() - dd.thumbs.outerWidth();
 			};
 			
 			// redraw arrows
-			dd.arrowDisplay();
+			if (dd.settings.arrows) {
+				dd.positionArrows();
+			};
 			
 			// unzoom if zoomed
 			if (dd.zoom.is('.active')) {
@@ -1750,6 +1691,52 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.setImageDimensions(cur, '', '', 'resize');
 			};
 				
+		},
+		
+		////////////////////
+		// POSITON ARROWS //
+		////////////////////
+		positionArrows : function() {
+			var dd = this,
+				aW, aH, box, top;
+			
+			// arrows are disabled
+			if (!dd.settings.arrows) {
+				dd.gal.find('.ddGallery-arrows').css({'display':'none'});
+				return;
+			};				
+			
+			// get arrow dimensions
+			dd.navW = dd.gal.find('.ddGallery-arrows').width();
+			dd.navH = dd.gal.find('.ddGallery-arrows').height();
+			box = Math.floor( ( (dd.navW > dd.navH) ? dd.navH : dd.navW) * 0.75);
+			
+			// build arrows
+			aW = Math.ceil(box * 0.6); // arrow width
+			aH = Math.ceil((aW * 1.1)/2); // arrow height
+			
+			dd.gal.find('.ddGallery-arrows .arrow').css({
+				'top' : Math.floor((dd.navH/2)-(aH)),
+				'left' : Math.floor(((dd.navW/2)-(aW/2)-(aW*0.1))),
+				'border-left-width' : '0',
+				'border-top' : 'solid transparent '+aH+'px',
+				'border-bottom' : 'solid transparent '+aH+'px',
+				'border-right-style' : 'solid',
+				'border-right-width' : aW+'px'
+			});
+			
+			dd.gal.find('.ddGallery-arrow-right .arrow').css({
+				'left' : Math.floor(((dd.navW/2)-(aW/2))+(aW*0.1)),
+				'border-right' : 'solid 0 transparent',
+				'border-left-style' : 'solid',
+				'border-left-width' : aW+'px'
+			});
+			
+			// place arrow buttons
+			top = Math.floor((dd.stageWrap.height()/2)-(dd.navH/2));			
+			dd.gal.find('.ddGallery-arrow-left').css({'top' : top});
+			dd.gal.find('.ddGallery-arrow-right').css({'top' : top});
+			
 		},
 		
 		//////////////////////////
@@ -1896,7 +1883,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			// move the controller
 			if (con) { conH = dd.controlH; };
-			dd.controls.stop(1,0).animate({'bottom':(conH - dd.controlH)}, speed);
+			dd.thumbWrap.stop(1,0).animate({'bottom':(conH - dd.controlH)}, speed);
 			
 			// move caption
 			if (dd.settings.captions){
@@ -1960,28 +1947,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			};
 		},
 		
-		///////////////////////
-		// ARROW SHOW / HIDE //
-		///////////////////////
-		arrowDisplay : function() {
-			var dd = this,
-				tL = parseInt(dd.thumbs.css('left'));
-			
-			// check left arrow
-			if (tL >= 0) {
-				dd.controls.find('.ddGallery-arrow-left').removeClass('active').children('span').css({'display':'none'});
-			} else {
-				dd.controls.find('.ddGallery-arrow-left').addClass('active').children('span').css({'display':'block'});
-			};
-			
-			// check right arrow
-			if (tL <= dd.maxScroll) {
-				dd.controls.find('.ddGallery-arrow-right').removeClass('active').children('span').css({'display':'none'});
-			} else {
-				dd.controls.find('.ddGallery-arrow-right').addClass('active').children('span').css({'display':'block'});
-			};
-		},
-
 		//------------------------------------
 
 		///////////////////////////

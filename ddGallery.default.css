@@ -5,7 +5,7 @@
 
 /* ---===###|[ STAGE ]|###===--- */
 .ddGallery-stage-wrapper {
-	background: #888; /* for non-css3 browsers */
+	background: #888;
 	background: -webkit-linear-gradient(#666, #aaa);
 	background: -moz-linear-gradient(top,  #666,  #aaa);
 	background: -o-linear-gradient(#666, #aaa);
@@ -19,8 +19,12 @@
 
 .ddGallery-stage {}
 
+
+/* ---===###|[ ITEMS ]|###===--- */
 .ddGallery-stage .ddGallery-item {
 	box-shadow: 0 7px 7px #000;
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,.75);
+	-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(255,255,255,0.2)));
 }
 
 
@@ -187,15 +191,6 @@
 .ddGallery-externalCaptions {}
 
 
-
-
-/* ---===###|[ CONTROL WRAPPER ]|###===--- */
-.ddGallery-controls {
-	border-top: solid 1px #222;
-	box-shadow: 0 0 10px #000;
-}
-
-
 /* ---===###|[ CONTROL TAB ]|###===--- */
 .ddGallery-control-tab {
 	background: rgb(0, 0, 0);
@@ -231,7 +226,7 @@
 }
 
 .ddGallery-control-tab.pinned {
-	background: rgb(119,119,119); /* for non-CSS3 browsers */
+	background: rgb(119,119,119);
 	background: -webkit-gradient(linear, left top, left bottom, from(rgba(119,119,119,1)), to(rgba(0,0,0,.5)));
 	background: -webkit-linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
 	background: -moz-linear-gradient(top,  rgba(119,119,119,1),  rgba(0,0,0,.5));
@@ -241,108 +236,61 @@
 
 
 
-/* ---===###|[ ARROWS w/ THUMBS ]|###===--- */
+/* ---===###|[ ARROWS ]|###===--- */
 .ddGallery-arrows {
-	background: rgb(0, 0, 0);
-	background: rgba(0, 0, 0, 0.7);
-	box-shadow: 0 0 10px #000;
-	width: 50px;
+	background: #000;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+	width: 4%;
+	height: 35%;
 	cursor: default;
+	margin: 0 7px;
+}
+
+.ddGallery-arrows:hover {
+	background: #42BDFF;
+	box-shadow: 0 0 5px #fff;
 }
 
 .ddGallery-arrow-left {
-	border-right: solid 2px #000;
+	left: 0;
 }
 
 .ddGallery-arrow-right {
-	border-left: solid 2px #000;
-}
-
-.ddGallery-arrow-left.active:hover,
-.ddGallery-arrow-right.active:hover {
-	box-shadow: 0 0 25px #000;
-	cursor: pointer;
-}
-
-.ddGallery-arrows .circle {
-	background: #555;
-}
-
-.ddGallery-arrows.active:hover .circle {
-	box-shadow: 0 0 15px #fff;
+	right: 0;
 }
 
 .ddGallery-arrow-left .arrow {
-	border-right-color: #ddd !important;
+	border-right-color: rgba(255, 255, 255, 0.5);
 }
 
 .ddGallery-arrow-right .arrow {
-	border-left-color: #ddd !important;
+	border-left-color: rgba(255, 255, 255, 0.5);
 }
 
-
-
-/* ---===###|[ ARROWS w/o THUMBS ]|###===--- */
-.ddGallery-arrow-left.active.nothumbs,
-.ddGallery-arrow-right.active.nothumbs {
-	background: #888; /* for non-css3 browsers */
-	box-shadow: none;
-	cursor: pointer;
-	border: none;
+.ddGallery-arrow-left:hover .arrow {
+	border-right-color: rgba(255, 255, 255, 1);
 }
 
-.ddGallery-arrow-left.active.nothumbs .arrow {
-	border-right-color: #fff !important;
-}
-
-.ddGallery-arrow-right.active.nothumbs .arrow {
-	border-left-color: #fff !important;
-}
-
-.ddGallery-arrow-left.active.nothumbs:hover .arrow {
-	border-right-color: #000 !important;
-}
-
-.ddGallery-arrow-right.active.nothumbs:hover .arrow {
-	border-left-color: #000 !important;
-}
-
-
-.ddGallery-arrow-left.active.nothumbs {
-	background: -webkit-linear-gradient(left, rgba(0,0,0,.5), rgba(0,0,0,0));
-	background: -moz-linear-gradient(left, rgba(0,0,0,.5),  rgba(0,0,0,0));
-	background: -o-linear-gradient(left, rgba(0,0,0,.5), rgba(0,0,0,0));
-	background: linear-gradient(left, rgba(0,0,0,.5), rgba(0,0,0,0));
-}
-
-.ddGallery-arrow-right.active.nothumbs {
-	background: -webkit-linear-gradient(right, rgba(0,0,0,.5), rgba(0,0,0,0));
-	background: -moz-linear-gradient(right, rgba(0,0,0,.5),  rgba(0,0,0,0));
-	background: -o-linear-gradient(right, rgba(0,0,0,.5), rgba(0,0,0,0));
-	background: linear-gradient(right, rgba(0,0,0,.5), rgba(0,0,0,0));
-}
-
-.ddGallery-arrow-left.active.nothumbs:hover {
-	background: -webkit-linear-gradient(left, rgba(255,255,255,.5), rgba(255,255,255,0));
-	background: -moz-linear-gradient(left,  rgba(255,255,255,.5),  rgba(255,255,255,0));
-	background: -o-linear-gradient(left, rgba(255,255,255,.5), rgba(255,255,255,0));
-	background: linear-gradient(left, rgba(255,255,255,.5), rgba(255,255,255,0));
-}
-
-.ddGallery-arrow-right.active.nothumbs:hover {
-	background: -webkit-linear-gradient(right, rgba(255,255,255,.5), rgba(255,255,255,0));
-	background: -moz-linear-gradient(right,  rgba(255,255,255,.5),  rgba(255,255,255,0));
-	background: -o-linear-gradient(right, rgba(255,255,255,.5), rgba(255,255,255,0));
-	background: linear-gradient(right, rgba(255,255,255,.5), rgba(255,255,255,0));
+.ddGallery-arrow-right:hover .arrow {
+	border-left-color: rgba(255, 255, 255, 1);
 }
 	
+
+/* ---===###|[ FULL-SCREEN ARROWS ]|###===--- */
+.ddGallery-main.fullScreen .ddGallery-arrows {}
+.ddGallery-main.fullScreen .ddGallery-arrows:hover {}
+.ddGallery-main.fullScreen .ddGallery-arrow-left {}
+.ddGallery-main.fullScreen .ddGallery-arrow-right {}
 
 
 
 /* ---===###|[ THUMBNAIL BUTTONS ]|###===--- */
 .ddGallery-thumbs-wrapper {
-	background: rgb(0, 0, 0);
+	background: #000;
 	background: rgba(0, 0, 0, 0.8);
+	border-top: solid 1px #222;
+	box-shadow: 0 0 10px #000;
 }
 
 .ddGallery-thumbs {
@@ -380,6 +328,40 @@
 	background: url(playbutton.png) center center no-repeat;
 }
 
+/* ---===###|[ DOT NAVIGATION ]|###===--- */
+.ddGallery-dotNav {
+	position: absolute;
+	bottom: -20px;
+	width: 100%;
+	height: 20px;
+	text-align: center;
+}
+
+.ddGallery-dotNav a {
+	position: relative;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	margin: 2px;
+	border-radius: 30px;
+	width: 7px;
+	height: 7px;
+	background: #777;
+	vertical-align: middle;
+}
+
+.ddGallery-dotNav a:hover {
+	background: #42BDFF;
+}
+
+.ddGallery-dotNav a.selected {
+	background: #000;
+	width: 9px;
+	height: 9px;
+}
+	
+	
+
 /* ---===###|[ PROGRESSIVE INTERNET EXPLORER SUPPORT ]|###===---
 http://css3pie.com/ 
   The path to the PIE.htc file is relative to the HTML
@@ -404,14 +386,13 @@ http://css3pie.com/
 .ddGallery-arrows,
 .ddGallery-arrow-left,
 .ddGallery-arrow-right,
-.ddGallery-arrows .circle,
 .ddGallery-arrow-right .arrow,
 .ddGallery-arrow-left .arrow,
-.ddGallery-arrow-left.active.nothumbs,
-.ddGallery-arrow-right.active.nothumbs,
 .ddGallery-thumbs-wrapper,
 .ddGallery-thumbs,
 .ddGallery-thumbs a,
+.ddGallery-dotNav,
+.ddGallery-dotNav a,
 
 	{ behavior: url(PIE.php); }
 

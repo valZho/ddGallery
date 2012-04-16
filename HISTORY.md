@@ -1,6 +1,14 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.0 :: 2012-04-16
+* + add: dot navigation & requisite options
+* + refactor: navigation arrows completely refactored to work independently of control thumbs and be more customizable
+* + refactor: control thumbnails completely refactored to scroll with mouse hover
+* + refactor: HTML and style overhauls to allow for overflowed buttons
+* + refactor: changed to count to off by default
+* x fix: minor bug fixes affecting animation
+
 ### v2.6.2 :: 2012-04-05
 * x fix: pin tab function bugs with full screen
 
