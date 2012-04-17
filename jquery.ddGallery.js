@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.0 :: 2012-04-16
+ * jQuery ddGallery v3.0.1 :: 2012-04-16
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -1572,7 +1572,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			item.css({'z-index':dd.mainZ+1});
 
 			// only works with images
-			if (typeFrom=='img' || typeFrom=='img selected') { 
+			if (typeFrom=='img' || typeFrom=='img selected'
+				|| typeFrom=='clickable' || typeFrom=='clickable selected') { 
 				oW = item.width();
 				oH = item.height();
 				oL = parseInt(item.css('left'));
@@ -1614,7 +1615,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			item.css({'z-index':dd.mainZ+1});
 
 			// only works with images
-			if (type=='img' || type=='img selected') { 
+			if (typeFrom=='img' || typeFrom=='img selected'
+				|| typeFrom=='clickable' || typeFrom=='clickable selected') { 
 				oW = item.width();
 				oH = item.height();
 				oL = parseInt(item.css('left'));
