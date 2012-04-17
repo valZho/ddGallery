@@ -44,8 +44,8 @@
 	color: #ddd;
 	font-size: 11px;
 	position: absolute;
-	top: 25px;
-	left: 0;
+	top: 15px;
+	left: -7px;
 	padding: 6px 6px 6px 12px;
 	white-space: nowrap;
 	border-left-width: 0;
@@ -316,6 +316,37 @@
 	box-shadow: 0 0 5px #fff;
 }
 
+
+/* ---===###|[ THUMBNAIL ITEM NUMBERS ]|###===--- */
+.ddGallery-thumbs a .ddGallery-number {
+	position: absolute;
+	top: -5px;
+	left: -7px;
+	display: block;
+	width: 12px;
+	height: 12px;
+	padding: 3px;
+	line-height: 12px;
+	border-radius: 20px;
+	text-align: center;
+	font-weight: bold;
+	font-family: "Impact",sans-serif;
+	font-size: 12px;
+	color: rgba(220,220,220, 0.8);
+	text-decoration: none !important;
+	background: rgba(0,0,0, 0.65);
+	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
+	border: solid 2px rgba(220,220,220, 0.8);	
+}
+
+.ddGallery-thumbs a.selected .ddGallery-number {
+	background: #42BDFF;
+	color: #fff;
+	border-color: #fff;
+	box-shadow: 0 0 10px #fff;
+};
+
+
 /* ---===###|[ THUMBNAIL WATERMARKS ]|###===--- */
 .ddGallery-thumbs a .ddGallery-watermark {
 	display: block;
@@ -328,7 +359,7 @@
 	background: url(playbutton.png) center center no-repeat;
 }
 
-/* ---===###|[ DOT NAVIGATION ]|###===--- */
+/* ---===###|[ DOT NAVIGATION: PLAIN ]|###===--- */
 .ddGallery-dotNav {
 	position: absolute;
 	bottom: -20px;
@@ -337,7 +368,7 @@
 	text-align: center;
 }
 
-.ddGallery-dotNav a {
+.ddGallery-dotNav .dot {
 	position: relative;
 	display: inline-block;
 	zoom: 1;
@@ -350,17 +381,51 @@
 	vertical-align: middle;
 }
 
-.ddGallery-dotNav a:hover {
+.ddGallery-dotNav .dot:hover {
 	background: #42BDFF;
 }
 
-.ddGallery-dotNav a.selected {
+.ddGallery-dotNav .dot.selected {
 	background: #000;
 	width: 9px;
 	height: 9px;
 }
 	
-	
+/* ---===###|[ DOT NAVIGATION: NUMBERED ]|###===--- */
+.ddGallery-dotNav .number {
+	position: relative;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	margin: 2px;
+	width: 12px;
+	height: 12px;
+	padding: 3px;
+	line-height: 12px;
+	border-radius: 20px;
+	text-align: center;
+	font-weight: bold;
+	font-family: "Impact",sans-serif;
+	font-size: 12px;
+	color: rgba(220,220,220, 0.8);
+	text-decoration: none !important;
+	background: rgba(0,0,0, 0.65);
+	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
+	border: solid 1px rgba(220,220,220, 0.8);	
+}
+
+.ddGallery-dotNav .number:hover {
+	background: #000;
+}
+
+.ddGallery-dotNav .number.selected {
+	background: #42BDFF;
+	color: #fff;
+	border-color: #fff;
+	box-shadow: 0 0 10px #fff;
+};
+
+
 
 /* ---===###|[ PROGRESSIVE INTERNET EXPLORER SUPPORT ]|###===---
 http://css3pie.com/ 

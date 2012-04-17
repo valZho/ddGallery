@@ -1,6 +1,17 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.1 :: 2012-04-17
+* [add] thumbnail numbering + requisite CSS + thumbsNumbers option
+* [add] dot navigation numbering + requisite CSS + dotNavNumbers option
+* [add] separate hide speed setting for arrows
+* [ref] minor edits to default CSS style
+* [ref] change controlHideSpeed to thumbsHideSpeed for consistency
+* [ref] change controlScrollSpeed to thumbsScrollSpeed for consistency
+* [ref] change controlPush to thumbsPush for consistency
+* [ref] change captionFadeSpeed to captionHideSpeed for consistency
+* [fix] minor improvements to CSS in gallery template
+
 ### v3.0.1 :: 2012-04-16
 * [fix] lift and drop animation not working with clickable images
 
