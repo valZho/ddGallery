@@ -1,6 +1,11 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.1.1 :: 2012-04-18
+* [add] add unused watermark references to default CSS to make it easier for editors to target
+* [ref] cleaned up CSS code and added version header
+* [fix] minor IE fixes in JavaScript
+
 ### v3.1 :: 2012-04-17
 * [add] thumbnail numbering + requisite CSS + thumbsNumbers option
 * [add] dot navigation numbering + requisite CSS + dotNavNumbers option

@@ -1,9 +1,20 @@
-/* ---===###|[ GALLERY ]|###===--- */
+/* /////////////////////////////////////////////////////
+ *
+ * jQuery ddGallery v3.1.1 :: 2012-04-18
+ * http://inventurous.net/ddgallery
+ *
+ * Copyright (c) 2012, Darren Doyle
+ * Free to use and abuse under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+//////////////////////////////////////////////////////*/
+
+/* GALLERY */
 .ddGallery-main.fullScreen {
 	background: #fff;
 }
 
-/* ---===###|[ STAGE ]|###===--- */
+/*  STAGE */
 .ddGallery-stage-wrapper {
 	background: #888;
 	background: -webkit-linear-gradient(#666, #aaa);
@@ -20,7 +31,7 @@
 .ddGallery-stage {}
 
 
-/* ---===###|[ ITEMS ]|###===--- */
+/*  ITEMS */
 .ddGallery-stage .ddGallery-item {
 	box-shadow: 0 7px 7px #000;
 	-webkit-box-shadow: 0 0 5px rgba(0,0,0,.75);
@@ -28,7 +39,7 @@
 }
 
 
-/* ---===###|[ IFRAME WRAPPERS ]|###===--- */
+/*  IFRAME WRAPPERS */
 .ddGallery-iframe-wrapper,
 .ddGallery-youtube-wrapper,
 .ddGallery-vimeo-wrapper {
@@ -38,7 +49,7 @@
 }
 
 
-/* ---===###|[ ITEM COUNT ]|###===--- */
+/*  ITEM COUNT */
 .ddGallery-count {
 	background: #000;
 	color: #ddd;
@@ -57,7 +68,7 @@
 	content: ' GALLERY ITEMS »';
 }
 
-/* ---===###|[ FULL SCREEN / ZOOM WRAPPER ]|###===--- */
+/*  FULL SCREEN / ZOOM WRAPPER */
 .ddGallery-toggles {
 	position: absolute;
 	top: 10px;
@@ -67,7 +78,7 @@
 	text-align: right;
 }
 
-/* ---===###|[ FULL SCREEN BUTTON ]|###===--- */
+/*  FULL SCREEN BUTTON */
 .ddGallery-fullScreen {
 	float: right;
 	background: #000;
@@ -136,7 +147,7 @@
 	
 
 
-/* ---===###|[ ZOOM BUTTON ]|###===--- */
+/*  ZOOM BUTTON */
 .ddGallery-zoom {
 	float: right;
 	background: #000;
@@ -175,7 +186,7 @@
 
 
 
-/* ---===###|[ CAPTIONS ]|###===--- */
+/*  CAPTIONS */
 .ddGallery-caption-wrapper {
 	background: rgb(0, 0, 0);
 	background: rgba(0, 0, 0, 0.5);
@@ -191,7 +202,7 @@
 .ddGallery-externalCaptions {}
 
 
-/* ---===###|[ CONTROL TAB ]|###===--- */
+/*  CONTROL TAB */
 .ddGallery-control-tab {
 	background: rgb(0, 0, 0);
 	background: rgba(0, 0, 0, 0.5);
@@ -236,7 +247,7 @@
 
 
 
-/* ---===###|[ ARROWS ]|###===--- */
+/*  ARROWS */
 .ddGallery-arrows {
 	background: #000;
 	background: rgba(0, 0, 0, 0.5);
@@ -277,7 +288,7 @@
 }
 	
 
-/* ---===###|[ FULL-SCREEN ARROWS ]|###===--- */
+/*  FULL-SCREEN ARROWS */
 .ddGallery-main.fullScreen .ddGallery-arrows {}
 .ddGallery-main.fullScreen .ddGallery-arrows:hover {}
 .ddGallery-main.fullScreen .ddGallery-arrow-left {}
@@ -285,7 +296,7 @@
 
 
 
-/* ---===###|[ THUMBNAIL BUTTONS ]|###===--- */
+/*  THUMBNAIL BUTTONS */
 .ddGallery-thumbs-wrapper {
 	background: #000;
 	background: rgba(0, 0, 0, 0.8);
@@ -317,7 +328,7 @@
 }
 
 
-/* ---===###|[ THUMBNAIL ITEM NUMBERS ]|###===--- */
+/*  THUMBNAIL ITEM NUMBERS */
 .ddGallery-thumbs a .ddGallery-number {
 	position: absolute;
 	top: -5px;
@@ -329,7 +340,6 @@
 	line-height: 12px;
 	border-radius: 20px;
 	text-align: center;
-	font-weight: bold;
 	font-family: "Impact",sans-serif;
 	font-size: 12px;
 	color: rgba(220,220,220, 0.8);
@@ -347,19 +357,26 @@
 };
 
 
-/* ---===###|[ THUMBNAIL WATERMARKS ]|###===--- */
+/*  THUMBNAIL WATERMARKS */
 .ddGallery-thumbs a .ddGallery-watermark {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
+.ddGallery-thumbs a.img .ddGallery-watermark,
+.ddGallery-thumbs a.clickable .ddGallery-watermark {}
+
+.ddGallery-thumbs a.div .ddGallery-watermark {}
+
+.ddGallery-thumbs a.iframe .ddGallery-watermark {}
+
 .ddGallery-thumbs a.youtube .ddGallery-watermark,
 .ddGallery-thumbs a.vimeo .ddGallery-watermark {
 	background: url(playbutton.png) center center no-repeat;
 }
 
-/* ---===###|[ DOT NAVIGATION: PLAIN ]|###===--- */
+/*  DOT NAVIGATION: PLAIN */
 .ddGallery-dotNav {
 	position: absolute;
 	bottom: -20px;
@@ -391,7 +408,7 @@
 	height: 9px;
 }
 	
-/* ---===###|[ DOT NAVIGATION: NUMBERED ]|###===--- */
+/*  DOT NAVIGATION: NUMBERED */
 .ddGallery-dotNav .number {
 	position: relative;
 	display: inline-block;
@@ -404,7 +421,6 @@
 	line-height: 12px;
 	border-radius: 20px;
 	text-align: center;
-	font-weight: bold;
 	font-family: "Impact",sans-serif;
 	font-size: 12px;
 	color: rgba(220,220,220, 0.8);
@@ -426,12 +442,18 @@
 };
 
 
+/* /////////////////////////////////////////////////////
+ *
+ * PROGRESSIVE INTERNET EXPLORER (PIE) SUPPORT
+ * Project website & download: http://css3pie.com/ 
+ *
+ * IMPORTANT!:
+ *   - The url path to the PIE.htc file is relative to the HTML file NOT the CSS file.
+ *   - The PIE.htc file must be served from the same domain.
+ *   - Please visit the project website for specifics on installation and usage.
+ *
+//////////////////////////////////////////////////////*/
 
-/* ---===###|[ PROGRESSIVE INTERNET EXPLORER SUPPORT ]|###===---
-http://css3pie.com/ 
-  The path to the PIE.htc file is relative to the HTML
-  file being viewed, not the CSS file it is called from.
-  The PIE.htc file must be served from the same domain. */
 .ddGallery-stage-wrapper,
 .ddGallery-stage,
 .ddGallery-iframe-wrapper,
@@ -456,9 +478,12 @@ http://css3pie.com/
 .ddGallery-thumbs-wrapper,
 .ddGallery-thumbs,
 .ddGallery-thumbs a,
+.ddGallery-thumbs a .ddGallery-watermark,
+.ddGallery-thumbs a .ddGallery-number,
 .ddGallery-dotNav,
-.ddGallery-dotNav a,
+.ddGallery-dotNav .dot,
+.ddGallery-dotNav .number,
 
-	{ behavior: url(PIE.php); }
+	{ behavior: url(PIE.htc); }
 
 

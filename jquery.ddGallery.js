@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.0.2 :: 2012-04-17
+ * jQuery ddGallery v3.1.1 :: 2012-04-18
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -9,7 +8,6 @@
  * http://www.opensource.org/licenses/mit-license.php
  * 
  */
-////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -514,7 +512,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						// set controller dimensions
 						dd.controlH = dd.controls.css({
 							'width' : '100%',
-							'height' : dd.controlH,
+							'height' : dd.controlH
 						}).outerHeight();
 						
 						// set thumb container width
