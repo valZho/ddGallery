@@ -1,6 +1,12 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.2 :: 2012-04-18
+* [ref] minor change to caption structure to accommodate IE
+* [fix] a few IE bug fixes
+* [fix] fixed CSS issue in gallery template preventing setting the vertical positioning of control tab
+* [fix] more default CSS fixes and refinements
+
 ### v3.1.1 :: 2012-04-18
 * [add] add unused watermark references to default CSS to make it easier for editors to target
 * [ref] cleaned up CSS code and added version header

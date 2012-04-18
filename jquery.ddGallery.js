@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.1.1 :: 2012-04-18
+ * jQuery ddGallery v3.2 :: 2012-04-18
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -67,18 +67,18 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	galleryTpl+= '<div class="ddGallery-dotNav"></div>';
 
 	// captions
-	galleryTpl+= '<div class="ddGallery-caption-wrapper" style="position:absolute; top:auto; bottom:0; overflow:hidden; width:100%; opacity:0">';
+	galleryTpl+= '<div class="ddGallery-caption-wrapper" style="position:absolute; top:auto; bottom:0; overflow:hidden; width:100%; height:0">';
 	galleryTpl+= 	'<div class="ddGallery-caption"></div>';
 	galleryTpl+= '</div>';
 
 	// pin tab
-	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; top:auto; bottom:0; overflow:hidden;"></div>';
+	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; top:auto; overflow:hidden;"></div>';
 
 	// arrows
-	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-left" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="javascript:;">';
+	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-left" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="">';
 	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
 	galleryTpl+= '</a>';
-	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-right" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="javascript:;">';
+	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-right" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="">';
 	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
 	galleryTpl+= '</a>';
 
@@ -441,13 +441,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					if (dd.settings.captions){
 						
 						if (cap=='&nbsp;') {
-							dd.capSizes.heights[itemId] = {'h':0,'o':0};
+							dd.capSizes.heights[itemId] = 0;
 						} else {
 							dd.caption.children('.ddGallery-caption').html(cap);
-							dd.capSizes.heights[itemId] = {
-								'h':dd.caption.height(),
-								'o':dd.caption.outerHeight()
-							};
+							dd.capSizes.heights[itemId] = dd.caption.children('.ddGallery-caption').outerHeight();
 						};
 												
 					};
@@ -455,15 +452,6 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					itemCounter++;
 					
 				});
-				
-				// get universal caption sizes
-				dd.capSizes.borders['t'] = dd.caption.css('border-top-width');
-				dd.capSizes.borders['b'] = dd.caption.css('border-bottom-width');
-				dd.capSizes.margins['t'] = dd.caption.css('margin-top');
-				dd.capSizes.margins['b'] = dd.caption.css('margin-bottom');
-				dd.capSizes.padding['t'] = dd.caption.css('padding-top');
-				dd.capSizes.padding['b'] = dd.caption.css('padding-bottom');
-				
 				
 				////////////////
 				// ADD THUMBS //
@@ -1029,7 +1017,11 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					};
 					
 					// show the zoom?
-					if (dd.thumbs.find('.selected').is('.img, .clickable')) { rs = dd.imageDimensions[dd.thumbs.find('.selected').attr('itemId')].o.z; };
+					if (dd.thumbs.find('.selected').is('.img, .clickable')) {
+						try {
+							rs = dd.imageDimensions[dd.thumbs.find('.selected').attr('itemId')].o.z;
+						} catch(err) {};
+					};
 					if (dd.settings.zoom && dd.settings.hideZoom && rs) {
 						dd.showZoom(true, dd.settings.thumbsHideSpeed);
 					};
@@ -1847,7 +1839,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					break;			
 			};
 				
-			image.animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((sH/2)-(iH/2)), 'display':'block'}, speed, function(){
+			image.css({'display':'block'}).animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((sH/2)-(iH/2))}, speed, function(){
 				if (clickable) { image = image.parent('a'); };
 				if (target=='in') { eval('dd.animIn_'+dd.settings.stageRotateType+'(image,"img",typeFrom,dir);'); };
 			});
@@ -1897,28 +1889,16 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// move caption
 			if (dd.settings.captions){
 				dd.caption.stop(1,0).css({'opacity':1});
-				if (cap & dd.capSizes.heights[id]['h']>0) {
-					capH = dd.capSizes.heights[id]['o'];
+				if (cap & dd.capSizes.heights[id]>0) {
+					capH = dd.capSizes.heights[id];
 					dd.caption.animate({
 						'bottom' : conH,
-						'height' : dd.capSizes.heights[id]['h'],
-						'margin-top' : dd.capSizes.margins['t'],
-						'margin-bottom' : dd.capSizes.margins['b'],
-						'padding-top' : dd.capSizes.padding['t'],
-						'padding-bottom' : dd.capSizes.padding['b'],
-						'border-top-width' : dd.capSizes.borders['t'],
-						'border-bottom-width' : dd.capSizes.borders['b']
+						'height' : dd.capSizes.heights[id],
 					}, speed).removeClass('collapsed');
 				} else {
 					dd.caption.animate({
 						'height' : 0,
 						'bottom' : conH,
-						'margin-top' : 0,
-						'margin-bottom' : 0,
-						'padding-top' : 0,
-						'padding-bottom' : 0,
-						'border-top-width' : 0,
-						'border-bottom-width' : 0
 					}, speed).addClass('collapsed');;
 				};
 			};
