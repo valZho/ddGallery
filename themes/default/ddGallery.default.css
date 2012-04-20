@@ -21,6 +21,7 @@
 	background: -moz-linear-gradient(top,  #666,  #aaa);
 	background: -o-linear-gradient(#666, #aaa);
 	background: linear-gradient(#666, #aaa);
+	-pie-background: linear-gradient(#666, #aaa);
 	box-shadow: inset 0 0 20px #444;
 }
 
@@ -189,8 +190,9 @@
 
 /* CAPTIONS */
 .ddGallery-caption {
-	background: rgb(0, 0, 0);
-	background: rgba(0, 0, 0, 0.5);
+	background: #000;
+	background: rgba(0,0,0,0.5);
+	-pie-background: rgba(0,0,0,0.5);
 	padding: 7px;
 	color: #ddd;
 	font-size: 13px;
@@ -202,16 +204,15 @@
 
 /* CONTROL TAB */
 .ddGallery-control-tab {
-	background: rgb(0, 0, 0);
-	background: rgba(0, 0, 0, 0.5);
+	background: #000;
+	background: rgba(0,0,0,0.5);
+	-pie-background: rgba(0,0,0,0.5);
 	border-color: #c7c7c7;
 	width: 100px;
 	height: 11px;
 	text-align: center;
 	color: #c7c7c7;
-	border-radius: 5px;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+	border-radius: 5px 5px 0 0;
 	font-size: 9px;
 	font-family: sans-serif;
 	font-weight: bold;
@@ -232,71 +233,98 @@
 	background: -moz-linear-gradient(top,  rgba(221,221,221,1),  rgba(0,0,0,.5));
 	background: -o-linear-gradient(rgba(221,221,221,1), rgba(0,0,0,0.5));
 	background: linear-gradient(rgba(221,221,221,1), rgba(0,0,0,.5));
+	-pie-background: linear-gradient(rgba(221,221,221,1), rgba(0,0,0,.5));
 }
 
 .ddGallery-control-tab.pinned {
-	background: rgb(119,119,119);
+	background: #777;
 	background: -webkit-gradient(linear, left top, left bottom, from(rgba(119,119,119,1)), to(rgba(0,0,0,.5)));
 	background: -webkit-linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
 	background: -moz-linear-gradient(top,  rgba(119,119,119,1),  rgba(0,0,0,.5));
 	background: -o-linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
 	background: linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
+	-pie-background: linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
 }
 
 
 /* ARROWS */
-.ddGallery-arrows {
-	background: #000;
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 5px;
-	width: 4%;
-	height: 35%;
-	margin: 0 7px;
+.ddGallery-arrow-wrap {
+	width: 30px;
+	height: 180px;
 }
 
-.ddGallery-arrows:hover {
+.ddGallery-arrow-wrap-left {
+	left: 0;
+}
+
+.ddGallery-arrow-wrap-right {
+	right: 0;
+}
+
+.ddGallery-arrow {
+	position: absolute;
+	top: 5px;
+	background: #000;
+	background: rgba(0,0,0,0.5);
+	-pie-background: rgba(0,0,0,0.5);
+	width: 25px;
+	height: 170px;
+}
+
+.ddGallery-arrow:hover {
 	background: #42BDFF;
+	-pie-background: #42BDFF;
 	box-shadow: 0 0 5px #fff;
 }
 
 .ddGallery-arrow-left {
-	left: 0;
+	right: 5px;
+	border-radius: 0 5px 5px 0;
 }
 
 .ddGallery-arrow-right {
-	right: 0;
+	left: 5px;
+	border-radius: 5px 0 0 5px;
 }
 
-.ddGallery-arrow-left .arrow {
-	border-right-color: #fff;
+.ddGallery-arrow-left span {
+	border-right-color: #fff; /* css arrow color */
 	border-right-color: rgba(255, 255, 255, 0.5);
 }
 
-.ddGallery-arrow-right .arrow {
-	border-left-color: #fff;
+.ddGallery-arrow-right span {
+	border-left-color: #fff; /* css arrow color */
 	border-left-color: rgba(255, 255, 255, 0.5);
 }
 
-.ddGallery-arrow-left:hover .arrow {
-	border-right-color: #fff;
+.ddGallery-arrow-left:hover span {
+	border-right-color: #fff; /* css arrow color */
 }
 
-.ddGallery-arrow-right:hover .arrow {
-	border-left-color: #fff;
+.ddGallery-arrow-right:hover span {
+	border-left-color: #fff; /* css arrow color */
 }
 	
 
 /* FULL-SCREEN ARROWS */
-.ddGallery-main.fullScreen .ddGallery-arrows {}
-.ddGallery-main.fullScreen .ddGallery-arrows:hover {}
+.ddGallery-main.fullScreen .ddGallery-arrow-wrap {}
+.ddGallery-main.fullScreen .ddGallery-arrow-wrap-left {}
+.ddGallery-main.fullScreen .ddGallery-arrow-wrap-right {}
 .ddGallery-main.fullScreen .ddGallery-arrow-left {}
+.ddGallery-main.fullScreen .ddGallery-arrow-left:hover {}
 .ddGallery-main.fullScreen .ddGallery-arrow-right {}
+.ddGallery-main.fullScreen .ddGallery-arrow-right:hover {}
+.ddGallery-main.fullScreen .ddGallery-arrow-left span {}
+.ddGallery-main.fullScreen .ddGallery-arrow-left:hover span {}
+.ddGallery-main.fullScreen .ddGallery-arrow-right span {}
+.ddGallery-main.fullScreen .ddGallery-arrow-right:hover span {}
 
 
 /* THUMBNAIL BUTTONS */
 .ddGallery-thumbs-wrapper {
 	background: #000;
 	background: rgba(0, 0, 0, 0.8);
+	-pie-background: rgba(0, 0, 0, 0.8);
 	border-top: solid 1px #222;
 	box-shadow: 0 0 10px #000;
 }
@@ -306,7 +334,9 @@
 }
 
 .ddGallery-thumbs a {
-	background: #000 center center no-repeat;
+	background-color: #000;
+	background-position: center center;
+	background-repeat: no-repeat;
 	border: solid #333 2px;
 	border-radius: 7px;
 	margin: 5px 2px;
@@ -341,13 +371,16 @@
 	font-size: 12px;
 	color: rgba(220,220,220, 0.8);
 	text-decoration: none;
+	background: #000;
 	background: rgba(0,0,0, 0.65);
+	-pie-background: rgba(0,0,0, 0.65);
 	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
 	border: solid 2px rgba(220,220,220, 0.8);	
 }
 
 .ddGallery-thumbs a.selected .ddGallery-number {
 	background: #42BDFF;
+	-pie-background: #42BDFF;
 	color: #fff;
 	border-color: #fff;
 	box-shadow: 0 0 10px #fff;
@@ -422,19 +455,24 @@
 	text-align: center;
 	font-family: "Impact",sans-serif;
 	font-size: 12px;
-	color: rgba(220,220,220, 0.8);
+	color: #dcdcdc;
+	color: rgba(220,220,220,0.8);
 	text-decoration: none;
-	background: rgba(0,0,0, 0.65);
+	background: #000;
+	background: rgba(0,0,0,0.65);
+	-pie-background: rgba(0,0,0,0.65);
 	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
-	border: solid 1px rgba(220,220,220, 0.8);	
+	border: solid 1px rgba(220,220,220, 0.8);
 }
 
 .ddGallery-dotNav .number:hover {
 	background: #000;
+	-pie-background: #000;
 }
 
 .ddGallery-dotNav .number.selected {
 	background: #42BDFF;
+	-pie-background: #42BDFF;
 	color: #fff;
 	border-color: #fff;
 	box-shadow: 0 0 10px #fff;
@@ -458,6 +496,8 @@
 .ddGallery-fullScreen,
 .ddGallery-fullScreen div,
 
+.ddGallery-stage-wrapper,
+
 .ddGallery-zoom,
 
 .ddGallery-caption,
@@ -465,19 +505,23 @@
 
 .ddGallery-control-tab,
 
-.ddGallery-arrows,
-.ddGallery-arrow-right .arrow,
-.ddGallery-arrow-left .arrow,
+.ddGallery-arrow-wrap,
+.ddGallery-arrow,
+.ddGallery-arrow span,
 
 .ddGallery-thumbs,
-.ddGallery-thumbs a,
+/* BROKEN IN CURRENT RELEASE OF CSS3PIE */
+/*.ddGallery-thumbs a,*/ 
 .ddGallery-thumbs a .ddGallery-watermark,
 .ddGallery-thumbs a .ddGallery-number,
 
+.ddGallery-dotNav,
 .ddGallery-dotNav .dot,
-.ddGallery-dotNav .number {
+.ddGallery-dotNav .number
 
-	/* behavior: url(PIE.htc); */
+{
+
+	behavior: url(PIE.php);
 	
 }
 

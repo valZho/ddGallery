@@ -134,6 +134,7 @@
 /* CAPTIONS */
 .ddGallery-caption {
 	background: #fff;
+	-pie-background: #fff;
 	padding: 2px;
 	color: #999;
 	font-size: 12px;
@@ -147,15 +148,14 @@
 /* CONTROL TAB */
 .ddGallery-control-tab {
 	background: #fff;
+	-pie-background: #fff;
 	border: solid 1px #acacac;
 	border-bottom: none;
 	width: 50%;
 	height: 7px;
 	text-align: center;
 	color: #999;
-	border-radius: 7px;
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+	border-radius: 7px 7px 0 0;
 	bottom: -1px;
 }
 
@@ -167,63 +167,101 @@
 .ddGallery-control-tab.pinned:hover {
 	color: #fff;
 	background: #acacac;
+	-pie-background: #acacac;
 }
 
 .ddGallery-control-tab.pinned {
 	background: #acacac;
+	-pie-background: #acacac;
 	color: #fff;
 }
 
 
 /* ARROWS */
-.ddGallery-arrows {
-	border-radius: 0;
+.ddGallery-arrow-wrap {
 	width: 40px;
 	height: 100px;
-	margin: 0;
 }
 
-.ddGallery-arrows:hover {
+.ddGallery-arrow-wrap-left {
+	right: 101%;
+	left: auto;
+}
+
+.ddGallery-arrow-wrap-right {
+	left: 101%;
+}
+
+.ddGallery-arrow {
+	top: 0;
+	width: 40px;
+	height: 100px;
+}
+
+.ddGallery-arrow:hover {
+	background: none;
+	-pie-background: none;
 	box-shadow: none;
 }
 
 .ddGallery-arrow-left {
-	left: -45px;
+	right: 0;
+	border-radius: 0;
 	background: url(images/arrow-left.png) 0 0 no-repeat;
+	-pie-background: url(images/arrow-left.png) 0 0 no-repeat;
 }
 
 .ddGallery-arrow-left:hover {
 	background: url(images/arrow-left.png) 0 -100px no-repeat;
+	-pie-background: url(images/arrow-left.png) 0 -100px no-repeat;
 }
 
 .ddGallery-arrow-right {
-	right: -45px;
+	left: 0;
+	border-radius: 0;
 	background: url(images/arrow-right.png) 0 0 no-repeat;
+	-pie-background: url(images/arrow-right.png) 0 0 no-repeat;
 }
 
 .ddGallery-arrow-right:hover {
+	left: 0;
+	border-radius: 0;
 	background: url(images/arrow-right.png) 0 -100px no-repeat;
+	-pie-background: url(images/arrow-right.png) 0 -100px no-repeat;
 }
 
-.ddGallery-arrows .arrow {
+.ddGallery-arrow span {
 	display: none;
 }
-	
 
 /* FULL-SCREEN ARROWS */
-.ddGallery-main.fullScreen .ddGallery-arrow-left {
-	background-position: 0 -200px;
+.ddGallery-main.fullScreen .ddGallery-arrow-wrap-left {
 	left: 5px;
 }
 
-.ddGallery-main.fullScreen .ddGallery-arrow-right {
-	background-position: 0 -200px;
+.ddGallery-main.fullScreen .ddGallery-arrow-wrap-right {
 	right: 5px;
+	left: auto;
 }
 
-.ddGallery-main.fullScreen .ddGallery-arrow-left:hover,
+.ddGallery-main.fullScreen .ddGallery-arrow-left {
+	background: url(images/arrow-left.png) 0 -200px no-repeat;
+	-pie-background: url(images/arrow-left.png) 0 -200px no-repeat;
+}
+
+.ddGallery-main.fullScreen .ddGallery-arrow-left:hover {
+	background: url(images/arrow-left.png) 0 -300px no-repeat;
+	-pie-background: url(images/arrow-left.png) 0 -300px no-repeat;
+}
+
+.ddGallery-main.fullScreen .ddGallery-arrow-right {
+	background: url(images/arrow-right.png) 0 -200px no-repeat;
+	-pie-background: url(images/arrow-right.png) 0 -200px no-repeat;
+}
+
 .ddGallery-main.fullScreen .ddGallery-arrow-right:hover {
-	background-position: 0 -300px;
+	background: url(images/arrow-right.png) 0 -300px no-repeat;
+	-pie-background: url(images/arrow-right.png) 0 -300px no-repeat;
 }
 
 
@@ -268,15 +306,14 @@
 	height: 12px;
 	padding: 3px;
 	line-height: 12px;
-	border-radius: 7px;
-	border-top-right-radius: 0;
-	border-bottom-left-radius: 0;
+	border-radius: 7px 0 7px 0;
 	text-align: center;
 	font-family: inherit;
 	font-size: 10px;
 	color: #fff;
 	text-decoration: none;
 	background: #acacac;
+	-pie-background: #acacac;
 	box-shadow: none;
 	border: none;	
 }
@@ -284,6 +321,7 @@
 .ddGallery-thumbs a:hover .ddGallery-number,
 .ddGallery-thumbs a.selected .ddGallery-number {
 	background: #ffbc16;
+	-pie-background: #ffbc16;
 	color: #fff;
 	box-shadow: none;
 }

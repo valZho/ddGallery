@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.3 :: 2012-04-18
+ * jQuery ddGallery v3.5 :: 2012-04-20
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -56,7 +56,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	galleryTpl+= 	'<a href="javascript:;" class="ddGallery-zoom"></a>';
 	galleryTpl+= '</div>';
 	
-	// thumb controller
+	// thumbs
 	galleryTpl+= '<div class="ddGallery-controls" style="position:absolute; top:auto; bottom:0; overflow:hidden;">';
 	galleryTpl+= 	'<div class="ddGallery-thumbs-wrapper" style="position:relative; width:auto; height:100%; overflow:hidden">';
 	galleryTpl+= 		'<div class="ddGallery-thumbs" style="position:absolute; top:0; left:0; height:100%;"></div>';
@@ -75,13 +75,17 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	galleryTpl+= '<div class="ddGallery-control-tab" style="position:absolute; top:auto; overflow:hidden;"></div>';
 
 	// arrows
-	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-left" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="">';
-	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
-	galleryTpl+= '</a>';
-	galleryTpl+= '<a class="ddGallery-arrows ddGallery-arrow-right" style="position:absolute; display:block; opacity:0; overflow:hidden;" href="">';
-	galleryTpl+= 		'<span class="arrow" style="position:absolute; width:0; height:0;"></span>';
-	galleryTpl+= '</a>';
-
+	galleryTpl+= '<div class="ddGallery-arrow-wrap ddGallery-arrow-wrap-left" style="position: absolute; display:block; overflow:hidden;">';
+	galleryTpl+= 	'<a class="ddGallery-arrow ddGallery-arrow-left" style="display:block; overflow:hidden;" href="">';
+	galleryTpl+= 		'<span style="position:absolute; width:0; height:0;"></span>';
+	galleryTpl+= 	'</a>';
+	galleryTpl+= '</div>';
+	galleryTpl+= '<div class="ddGallery-arrow-wrap ddGallery-arrow-wrap-right" style="position: absolute; display:block; overflow:hidden;">';
+	galleryTpl+= 	'<a class="ddGallery-arrow ddGallery-arrow-right" style="display:block; overflow:hidden;" href="">';
+	galleryTpl+= 		'<span style="position:absolute; width:0; height:0;"></span>';
+	galleryTpl+= 	'</a>';
+	galleryTpl+= '</div>';
+	
 	
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -228,22 +232,14 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			};
 			
 			// set css value(s) on main container
+			dd.origCSS = (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position');
 			dd.gal.css({
-				'position' : (dd.gal.css('position')=='static') ? 'relative' : dd.gal.css('position')
+				'position' : dd.origCSS
 			}).addClass('ddGallery-main');
 			
 			// store original content
 			dd.origBody = $('body').css('overflow');
 			dd.origData = dd.gal.html();
-			dd.origCSS = {
-				'z-index':dd.gal.css('z-index'),
-				'position':dd.gal.css('position'),
-				'top':dd.gal.css('top'),
-				'left':dd.gal.css('left'),
-				'width':dd.gal.css('width'),
-				'height':dd.gal.css('height'),
-				'margin':dd.gal.css('margin')				
-			};
 			dd.orig = $('<div />').html(dd.gal.html());
 			
 			// populate current gallery with requisite html structure
@@ -253,6 +249,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				
 				// get objects
 				dd.caption = dd.gal.find('.ddGallery-caption-wrapper');
+				dd.arrows = dd.gal.find('.ddGallery-arrow-wrap');
+				dd.arrowOrig = dd.arrows.width();
 				dd.controls = dd.gal.find('.ddGallery-controls');
 				dd.tab = dd.gal.find('.ddGallery-control-tab');
 				dd.tabB = parseInt(dd.tab.css('bottom'));
@@ -264,6 +262,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.zoom = dd.gal.find('.ddGallery-zoom');
 				dd.full = dd.gal.find('.ddGallery-fullScreen');
 				dd.dot = dd.gal.find('.ddGallery-dotNav');
+				
 				
 				// set layer order
 				dd.mainZ = (dd.gal.css('z-index') == 'auto') ? 0 : parseInt(dd.gal.css('z-index'));
@@ -283,6 +282,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					dd.dot.css({'display':'block','z-index':dd.mainZ+7});
 				} else {
 					dd.dot.css({'display':'none'});
+				};
+				
+				// SET UP ARROWS
+				if (dd.settings.arrows) {
+					dd.arrows.css({'width':0});
+				} else {
+					dd.arrows.css({'display':'none'});
 				};
 				
 				// SET UP COUNT
@@ -358,7 +364,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							thumb = me.attr('src'), // url to thumbnail
 							cap = me.attr('alt'); // caption
 							
-							// resize for thumbnail (doesn't work in IE 8 or lower)
+							// resize large image for thumbnail (doesn't work in IE 8 or lower)
 							thumbResize = ';background-repeat:no-repeat round;background-size:auto 100%;';
 						
 						// linked image
@@ -434,7 +440,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 					// create dot nav?
 					if (dd.settings.dotNav) {
-						dotContent += '<a href="javascript:;" class="'+((dd.settings.dotNavNumbers) ? 'number' : 'dot')+'">'+((dd.settings.dotNavNumbers) ? itemCounter : '')+'</a>';
+						dotContent += '<a href="javascript:;" itemId="'+itemId+'" class="'+((dd.settings.dotNavNumbers) ? 'number' : 'dot')+'">'+((dd.settings.dotNavNumbers) ? itemCounter : '')+'</a>';
 					};
 					
 					// get caption size array for animation
@@ -523,7 +529,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 											
 						// hide/show arrows?
 						if (!dd.settings.hideArrows) {
-							dd.gal.find('.ddGallery-arrows').css({'opacity':1});
+							dd.arrows.css({'width':dd.arrowOrig});
 						};
 						
 						// hide the thumbs?
@@ -647,7 +653,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						thisThumb.siblings('a').removeClass('selected');
 						thisThumb.addClass('selected');
 						dd.dot.children('a').removeClass('selected');
-						dd.dot.children('a:nth-child('+dd.curItem+')').addClass('selected');
+						dd.dot.children('a[itemId="'+itemId+'"]').addClass('selected');
 						
 						// add loading class to stage
 						dd.stage.addClass('loading');
@@ -938,8 +944,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				//////////////////
 				// DOTNAV CLICK //
 				//////////////////
-				dd.gal.find('.ddGallery-dotNav a').on('click', function(){
-					dd.thumbs.children('a:nth-child('+($(this).index()+1)+')').click();
+				dd.dot.children('a').on('click', function(){
+					dd.thumbs.children('a[itemId="'+$(this).attr('itemId')+'"]').click();
 				});
 				
 				//------------------------------------
@@ -1012,7 +1018,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 					// show arrows?
 					if (dd.settings.arrows) {
-						dd.gal.find('.ddGallery-arrows').stop(1,0).animate({'opacity':1}, dd.settings.arrowsHideSpeed);
+						dd.arrows.stop(1,0).animate({'width':dd.arrowOrig}, dd.settings.arrowsHideSpeed);
 					};
 					
 					// hide the count?
@@ -1066,7 +1072,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 					// hide arrows?
 					if (dd.settings.arrows && dd.settings.hideArrows) {
-						dd.gal.find('.ddGallery-arrows').stop(1,0).animate({'opacity':0}, dd.settings.arrowsHideSpeed);
+						dd.arrows.stop(1,0).animate({'width':0}, dd.settings.arrowsHideSpeed);
 					};
 					
 					// show the count?
@@ -1411,44 +1417,24 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				//////////////////////
 				// CONTAINER RESIZE //
 				//////////////////////
-				dd.resizer.timer = setInterval(function(){
+				dd.resizer.interval = setInterval(function(){
 					var cW = dd.gal.width(),
-						cH = dd.gal.height(),
-						wW = $(window).width(),
-						wH = $(window).height();
+						cH = dd.gal.height();
 					
-					if ( (cW != dd.resizer.cW || cH != dd.resizer.cH) || ((wW != dd.resizer.wW || wH != dd.resizer.wH) && dd.fullScreen) ) {
-						if (!dd.fullScreen) {
-							dd.gal.css({
-								'z-index':'',
-								'position':'',
-								'top':'',
-								'left':'',
-								'width':'',
-								'height':'',
-								'margin':''				
-							});
-							dd.origCSS = {
-								'z-index':dd.gal.css('z-index'),
-								'position': (dd.gal.css('position') == 'static') ? 'relative' : dd.gal.css('position'),
-								'top':dd.gal.css('top'),
-								'left':dd.gal.css('left'),
-								'width':dd.gal.css('width'),
-								'height':dd.gal.css('height'),
-								'margin':dd.gal.css('margin')				
-							};
-							dd.gal.css(dd.origCSS);
-						};
+					if ( cW != dd.resizer.cW || cH != dd.resizer.cH ) {
 						dd.resizeMe(dd.fullScreen);
-						
 						dd.resizer.cW = cW;
 						dd.resizer.cH = cH;
-						dd.resizer.wW = wW;
-						dd.resizer.wH = wH;
-						
 					};
 					
-				}, 300);
+				}, 500);
+				
+				///////////////////
+				// WINDOW RESIZE //
+				///////////////////
+				$(window).on('resize.'+dd.id, function(){
+					dd.resizeMe(dd.fullScreen);
+				});
 				
 				//------------------------------------
 				
@@ -1661,24 +1647,44 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		//////////////////
 		resizeMe : function(full) {
 			var dd = this,
-				cur = dd.stage.find('.selected');
+				cur = dd.stage.find('.selected'),
+				fWplus=0, fHplus=0,
+				pinned=dd.pinned;
+			
+			// unpin if pinned
+			if (pinned) { dd.tab.mouseup(); };
 			
 			// if animating... finish immediately, before resize
 			dd.stage.find('.ddGallery-item').stop(1,1);
 			
-			// set gallery wrapper options
 			if (full) {
+								
+				// get gallery width/height add-ons
+				fWplus += parseInt(dd.gal.css('border-left-width')) + parseInt(dd.gal.css('padding-left')) + parseInt(dd.gal.css('padding-right')) + parseInt(dd.gal.css('border-right-width'));
+				fHplus += parseInt(dd.gal.css('border-top-width')) + parseInt(dd.gal.css('padding-top')) + parseInt(dd.gal.css('padding-bottom')) + parseInt(dd.gal.css('border-bottom-width'));
+							
+				// set gallery to full screen
 				dd.gal.css({
 					'z-index':10000,
 					'position':'fixed',
 					'top':0,
 					'left':0,
-					'width':$(window).width(),
-					'height':$(window).height(),
+					'width':$(window).width() - fWplus,
+					'height':$(window).height() - fHplus,
 					'margin':0
 				}).addClass('fullScreen');
+			
 			} else {
-				dd.gal.css(dd.origCSS).removeClass('fullScreen');
+				// return gallery to defaults
+				dd.gal.css({
+					'z-index':'',
+					'position':dd.origCSS,
+					'top':'',
+					'left':'',
+					'width':'',
+					'height':'',
+					'margin':''				
+				}).removeClass('fullScreen');
 			};
 			
 			// set stage height
@@ -1710,7 +1716,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			if ( cur.is('img') ) {
 				dd.setImageDimensions(cur, '', '', 'resize', '');
 			};
-				
+			
+			
 		},
 		
 		////////////////////
@@ -1718,26 +1725,28 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		////////////////////
 		positionArrows : function() {
 			var dd = this,
-				aW, aH, box, top;
+				wH, bW, bH, aW, aH,
+				box, top;
 			
 			// arrows are disabled
 			if (!dd.settings.arrows) {
-				dd.gal.find('.ddGallery-arrows').css({'display':'none'});
+				dd.arrows.css({'display':'none'});
 				return;
 			};				
 			
 			// get arrow dimensions
-			dd.navW = dd.gal.find('.ddGallery-arrows').width();
-			dd.navH = dd.gal.find('.ddGallery-arrows').height();
-			box = Math.floor( ( (dd.navW > dd.navH) ? dd.navH : dd.navW) * 0.75);
+			wH = dd.arrows.height();
+			bW = dd.arrows.children('.ddGallery-arrow').width();
+			bH = dd.arrows.children('.ddGallery-arrow').height();
+			box = Math.floor( ( (bW > bH) ? bH : bW) * 0.75);
 			
 			// build arrows
 			aW = Math.ceil(box * 0.6); // arrow width
 			aH = Math.ceil((aW * 1.1)/2); // arrow height
 			
-			dd.gal.find('.ddGallery-arrows .arrow').css({
-				'top' : Math.floor((dd.navH/2)-(aH)),
-				'left' : Math.floor(((dd.navW/2)-(aW/2)-(aW*0.1))),
+			dd.arrows.find('span').css({
+				'top' : Math.floor((bH/2)-(aH)),
+				'left' : Math.floor(((bW/2)-(aW/2)-(aW*0.1))),
 				'border-left-width' : '0',
 				'border-top' : 'solid transparent '+aH+'px',
 				'border-bottom' : 'solid transparent '+aH+'px',
@@ -1745,17 +1754,16 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				'border-right-width' : aW+'px'
 			});
 			
-			dd.gal.find('.ddGallery-arrow-right .arrow').css({
-				'left' : Math.floor(((dd.navW/2)-(aW/2))+(aW*0.1)),
+			dd.arrows.find('.ddGallery-arrow-right span').css({
+				'left' : Math.floor(((bW/2)-(aW/2))+(aW*0.1)),
 				'border-right' : 'solid 0 transparent',
 				'border-left-style' : 'solid',
 				'border-left-width' : aW+'px'
 			});
 			
 			// place arrow buttons
-			top = Math.floor((dd.stageWrap.height()/2)-(dd.navH/2));			
-			dd.gal.find('.ddGallery-arrow-left').css({'top' : top});
-			dd.gal.find('.ddGallery-arrow-right').css({'top' : top});
+			top = Math.floor((dd.stageWrap.height()/2)-(wH/2));			
+			dd.arrows.css({'top' : top});
 			
 		},
 		
@@ -1947,7 +1955,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		///////////////////
 		captionTimer : function(showControls) {
 			var dd = this;
-			if (!dd.pinned && dd.settings.captions && ((!dd.fullScreen && dd.settings.hideCaptions) || (dd.fullScreen && dd.settings.hideCaptionsOnFull))) {
+			if (!dd.pinned && dd.settings.captions && ((!dd.fullScreen && dd.settings.hideCaptions && !dd.hover) || (dd.fullScreen && dd.settings.hideCaptionsOnFull && !dd.hover))) {
 				clearTimeout(dd.captionDelay);
 				dd.captionDelay = setTimeout(function(){
 					dd.moveControls(showControls, false, dd.settings.captionHideSpeed);			
@@ -1966,6 +1974,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// clear listeners
 			dd.gal.off();
 			$(document).off('keydown.'+dd.id);
+			$(window).off('resize.'+dd.id);
 			
 			// stop timers
 			clearTimeout(dd.rotator);

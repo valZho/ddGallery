@@ -1,6 +1,17 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.5 :: 2012-04-20
+* [ref] unpin controls when full screen mode toggled
+* [ref] more improvements and optimizations to resizing listeners
+* [ref] significant CSS3PIE support optimizations and improvements
+* [ref] completely refactored arrows for better cross-browser compatibility
+* [ref] refactored CSS to support new arrows
+* [ref] improvements to dotNav logic
+* [fix] fixed loading image for minimalist: dark theme
+* [fix] full screen mode now accommodates border and padding widths on main gallery
+* [fix] caption still hiding while mouse hover
+
 ### v3.3 :: 2012-04-19
 * [add] animation style: random
 * [ref] streamlined external command parser
