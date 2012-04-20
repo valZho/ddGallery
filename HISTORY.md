@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6.1 :: 2012-04-20
+* [add] external command: "resize"
+
 ### v3.6 :: 2012-04-20
 * [add] scale to fill option for images
 
