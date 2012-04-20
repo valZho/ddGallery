@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6 :: 2012-04-20
+* [add] scale to fill option for images
+
 ### v3.5 :: 2012-04-20
 * [ref] unpin controls when full screen mode toggled
 * [ref] more improvements and optimizations to resizing listeners

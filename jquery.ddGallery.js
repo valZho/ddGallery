@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.5 :: 2012-04-20
+ * jQuery ddGallery v3.6 :: 2012-04-20
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -181,6 +181,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		rotate : true,
 		playlist : false,
 		hoverPause : true,
+		fill : false,
 		enlarge : true,
 		stretch : false,
 		
@@ -224,6 +225,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			// start item sanity check
 			dd.settings.startItem = parseInt(dd.settings.startItem);
 			dd.settings.startItem = (dd.settings.startItem>dd.itemCount) ? dd.itemCount : (dd.settings.startItem<1) ? 1 : dd.settings.startItem;
+			
+			// image scaling sanity check
+			if (dd.settings.fill) { dd.settings.enlarge = false; }
 			
 			// playlist mode?
 			if (dd.settings.playlist) {
@@ -1822,16 +1826,16 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				iW = sW;
 				iH = sH;
 			
-			
 			// should the image be resized?
-			} else if ( ((iH>sH) || (iW>sW)) || (((iH < sH) && (iW < sW)) && dd.settings.enlarge) ) {
+			} else if ( ((iH>sH) || (iW>sW)) || (((iH < sH) && (iW < sW)) && dd.settings.enlarge) || dd.settings.fill ) {
 				
-				// if stage is wider relative to image, change height first
-				if (sR > iR) {
+				// if stage is wider relative to image, change height first on enlarge
+				// if image is wide, match stage height on fill
+				if ( (sR>iR && dd.settings.enlarge) || (iR>1 && dd.settings.fill) ) {
 					nH = sH;
 					iW = Math.round(iW * (nH/iH));
 					iH = nH;
-												
+				
 				// if stage is taller relative to image, change width first
 				} else {
 					nW = sW;
