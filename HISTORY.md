@@ -1,6 +1,13 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.3 :: 2012-04-19
+* [add] animation style: random
+* [ref] streamlined external command parser
+* [ref] streamlined animation sanity check
+* [ref] rewrote container/window resize listener, should be more robust
+* [fix] more default CSS fixes and refinements
+
 ### v3.2 :: 2012-04-18
 * [ref] minor change to caption structure to accommodate IE
 * [fix] a few IE bug fixes

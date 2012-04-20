@@ -1,0 +1,345 @@
+/* /////////////////////////////////////////////////////
+ *
+ * Portfolio Theme for ddGallery
+ * Author: Darren Doyle
+ * http://inventurous.net/ddgallery
+ *
+//////////////////////////////////////////////////////*/
+
+/* GALLERY */
+.ddGallery-main {
+	border: solid 1px #acacac;
+}
+
+.ddGallery-main.fullScreen {
+	background: #fff;
+}
+
+/* STAGE */
+.ddGallery-stage-wrapper {
+	background: #fff;
+	box-shadow: none;
+}
+
+/* ITEMS */
+.ddGallery-item {
+	box-shadow: 0 7px 7px rgba(0,0,0,0.4);
+	-webkit-box-reflect: none;
+}
+
+/* IFRAME WRAPPERS */
+.ddGallery-iframe-wrapper,
+.ddGallery-youtube-wrapper,
+.ddGallery-vimeo-wrapper {
+	box-shadow: none;
+}
+
+
+/* ITEM COUNT */
+.ddGallery-count {
+	background: none;
+	color: #999;
+	font-size: 12px;
+	position: absolute;
+	height: 15px;
+	line-height: 15px;
+	top: -15px;
+	left: 3px;
+	padding: 0;
+	font-weight: normal;
+	box-shadow: none;
+}
+
+.ddGallery-count:after {
+	content: '';
+}
+
+.ddGallery-count:before {
+	content: 'Item: ';
+}
+
+/* FULL SCREEN / ZOOM WRAPPER */
+.ddGallery-toggles {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+
+/* FULL SCREEN BUTTON */
+.ddGallery-fullScreen {
+	float: right;
+	padding: 0;
+	width: 20px;
+	height: 20px;
+	box-shadow: none;
+	border-radius: 0;
+	margin: 0 0 0 2px;
+	background: url(images/fullscreen.png) 0 0 no-repeat;
+}
+
+.ddGallery-fullScreen:hover {
+	background: url(images/fullscreen.png) 0 -20px no-repeat;
+}
+
+.ddGallery-fullScreen.active {
+	background: url(images/fullscreen.png) 0 -40px no-repeat;
+	opacity: 1;
+}
+
+.ddGallery-fullScreen.active:hover {
+	background: url(images/fullscreen.png) 0 -60px no-repeat;
+}
+
+.ddGallery-fullScreen > div,
+.ddGallery-fullScreen > div > div {
+	display: none;
+}
+
+
+/* ZOOM BUTTON */
+.ddGallery-zoom {
+	float: right;
+	padding: 0;
+	width: 20px;
+	height: 20px;
+	box-shadow: none;
+	border-radius: 0;
+	margin: 0;
+	background: url(images/zoom.png) 0 0 no-repeat;
+}
+
+.ddGallery-zoom:hover {
+	background: url(images/zoom.png) 0 -20px no-repeat;
+}
+
+.ddGallery-zoom.active {
+	background: url(images/zoom.png) 0 -40px no-repeat;
+	opacity: 1;
+}
+
+.ddGallery-zoom.active:hover {
+	background: url(images/zoom.png) 0 -60px no-repeat;
+}
+
+.ddGallery-zoom:after {
+	content: '';
+}
+
+.ddGallery-zoom.active:after {
+	content: '';
+}
+
+
+
+/* CAPTIONS */
+.ddGallery-caption {
+	background: #fff;
+	padding: 2px;
+	color: #999;
+	font-size: 12px;
+	text-align: right;
+	border-top: solid 1px #acacac;
+}
+
+.ddGallery-externalCaptions {}
+
+
+/* CONTROL TAB */
+.ddGallery-control-tab {
+	background: #fff;
+	border: solid 1px #acacac;
+	border-bottom: none;
+	width: 50%;
+	height: 7px;
+	text-align: center;
+	color: #999;
+	border-radius: 7px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	bottom: -1px;
+}
+
+.ddGallery-control-tab:before {
+	content: ': : : : : : :';
+}
+
+.ddGallery-control-tab:hover,
+.ddGallery-control-tab.pinned:hover {
+	color: #fff;
+	background: #acacac;
+}
+
+.ddGallery-control-tab.pinned {
+	background: #acacac;
+	color: #fff;
+}
+
+
+/* ARROWS */
+.ddGallery-arrows {
+	border-radius: 0;
+	width: 40px;
+	height: 100px;
+	margin: 0;
+}
+
+.ddGallery-arrows:hover {
+	box-shadow: none;
+}
+
+.ddGallery-arrow-left {
+	left: -45px;
+	background: url(images/arrow-left.png) 0 0 no-repeat;
+}
+
+.ddGallery-arrow-left:hover {
+	background: url(images/arrow-left.png) 0 -100px no-repeat;
+}
+
+.ddGallery-arrow-right {
+	right: -45px;
+	background: url(images/arrow-right.png) 0 0 no-repeat;
+}
+
+.ddGallery-arrow-right:hover {
+	background: url(images/arrow-right.png) 0 -100px no-repeat;
+}
+
+.ddGallery-arrows .arrow {
+	display: none;
+}
+	
+
+/* FULL-SCREEN ARROWS */
+.ddGallery-main.fullScreen .ddGallery-arrow-left {
+	background-position: 0 -200px;
+	left: 5px;
+}
+
+.ddGallery-main.fullScreen .ddGallery-arrow-right {
+	background-position: 0 -200px;
+	right: 5px;
+}
+
+.ddGallery-main.fullScreen .ddGallery-arrow-left:hover,
+.ddGallery-main.fullScreen .ddGallery-arrow-right:hover {
+	background-position: 0 -300px;
+}
+
+
+/* THUMBNAIL BUTTONS */
+.ddGallery-thumbs-wrapper {
+	background: #fff;
+	border-top: solid 1px #acacac;
+	box-shadow: none;
+}
+
+.ddGallery-thumbs {
+	padding: 0 7px;
+}
+
+.ddGallery-thumbs a {
+	background: #acacac center center no-repeat;
+	border: solid #acacac 2px;
+	border-radius: 7px;
+	margin: 2px 1px;
+	width: 80px;
+	height: 35px;
+}
+
+.ddGallery-thumbs a:hover {
+	border-color: #ffbc16;
+	box-shadow: none;
+}
+
+.ddGallery-thumbs a.selected {
+	border-color: #ffbc16;
+	box-shadow: none;
+}
+
+
+/* THUMBNAIL ITEM NUMBERS */
+.ddGallery-thumbs a .ddGallery-number {
+	top: auto;
+	left: auto;
+	bottom: -2px;
+	right: -2px;
+	width: 20px;
+	height: 12px;
+	padding: 3px;
+	line-height: 12px;
+	border-radius: 7px;
+	border-top-right-radius: 0;
+	border-bottom-left-radius: 0;
+	text-align: center;
+	font-family: inherit;
+	font-size: 10px;
+	color: #fff;
+	text-decoration: none;
+	background: #acacac;
+	box-shadow: none;
+	border: none;	
+}
+
+.ddGallery-thumbs a:hover .ddGallery-number,
+.ddGallery-thumbs a.selected .ddGallery-number {
+	background: #ffbc16;
+	color: #fff;
+	box-shadow: none;
+}
+
+
+/* DOT NAVIGATION: PLAIN */
+.ddGallery-dotNav {
+	position: absolute;
+	bottom: -20px;
+	width: 100%;
+	height: 20px;
+	text-align: center;
+}
+
+.ddGallery-dotNav .dot {
+	margin: 1px;
+	border-radius: 4px;
+	width: 17px;
+	height: 10px;
+	background: #acacac;
+}
+
+.ddGallery-dotNav .dot:hover {
+	background: #ffbc16;
+}
+
+.ddGallery-dotNav .dot.selected {
+	background: #ffbc16;
+	width: 17px;
+	height: 10px;
+}
+	
+/* DOT NAVIGATION: NUMBERED */
+.ddGallery-dotNav .number {
+	margin: 1px;
+	width: 20px;
+	height: 10px;
+	padding: 2px;
+	line-height: 10px;
+	border-radius: 5px;
+	text-align: center;
+	font-family: inherit;
+	font-size: 10px;
+	color: #fff;
+	text-decoration: none;
+	background: #acacac;
+	box-shadow: none;
+	border: none;	
+}
+
+.ddGallery-dotNav .number:hover {
+	background: #ffbc16;
+}
+
+.ddGallery-dotNav .number.selected {
+	background: #ffbc16;
+	color: #fff;
+	box-shadow: none;
+}

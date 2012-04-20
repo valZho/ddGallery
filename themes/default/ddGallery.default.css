@@ -1,0 +1,484 @@
+/* /////////////////////////////////////////////////////
+ *
+ * Default Theme for ddGallery v3.3
+ * Author: Darren Doyle
+ * http://inventurous.net/ddgallery
+ *
+//////////////////////////////////////////////////////*/
+
+/* OUTER GALLERY WRAPPER */
+.ddGallery-main {}
+
+.ddGallery-main.fullScreen {
+	background: #fff;
+}
+
+
+/* STAGE */
+.ddGallery-stage-wrapper {
+	background: #888;
+	background: -webkit-linear-gradient(#666, #aaa);
+	background: -moz-linear-gradient(top,  #666,  #aaa);
+	background: -o-linear-gradient(#666, #aaa);
+	background: linear-gradient(#666, #aaa);
+	box-shadow: inset 0 0 20px #444;
+}
+
+.ddGallery-stage.loading {
+	background: url(images/loading.gif) center center no-repeat;
+}
+
+.ddGallery-stage {}
+
+
+/* ALL STAGE ITEMS */
+.ddGallery-item {
+	box-shadow: 0 7px 7px #000;
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,.75);
+	-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(255,255,255,0.2)));
+}
+
+
+/* DIV WRAPPERS */
+.ddGallery-div-wrapper {}
+
+
+/* IFRAME WRAPPERS */
+.ddGallery-iframe-wrapper,
+.ddGallery-youtube-wrapper,
+.ddGallery-vimeo-wrapper {
+	background: #fff url(images/loading.gif) center center no-repeat;
+	box-shadow: inset 0 0 100px #ddd, inset 0 0 20px #444;
+	overflow: hidden;
+}
+
+
+/* ITEM COUNT */
+.ddGallery-count {
+	background: #000;
+	color: #ddd;
+	font-size: 11px;
+	position: absolute;
+	top: 15px;
+	left: -7px;
+	padding: 6px 6px 6px 12px;
+	white-space: nowrap;
+	font-weight: bold;
+	box-shadow: 0 0 5px #fff;
+}
+
+.ddGallery-count:after {
+	content: ' GALLERY ITEMS »';
+}
+
+
+/* FULL SCREEN / ZOOM WRAPPER */
+.ddGallery-toggles {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	white-space: nowrap;
+	width: 100%;
+	text-align: right;
+}
+
+
+/* FULL SCREEN BUTTON */
+.ddGallery-fullScreen {
+	float: right;
+	background: #000;
+	color: #ddd;
+	font-size: 11px;
+	padding: 6px;
+	white-space: nowrap;
+	font-weight: bold;
+	box-shadow: 0 0 5px #fff;
+	text-decoration: none;
+	border-radius: 5px;
+	margin: 0 5px;
+}
+
+.ddGallery-fullScreen:hover,
+.ddGallery-fullScreen:hover > div > div {
+	background: #42BDFF;
+	color: #fff;
+}
+
+.ddGallery-fullScreen.active {
+	opacity: .3;
+}
+
+.ddGallery-fullScreen.active > div {
+	background: #000;
+}
+
+.ddGallery-fullScreen > div {
+	position: relative;
+	display: block;
+	background: #fff;
+	width: 14px;
+	height: 14px;
+}
+
+.ddGallery-fullScreen.active > div {
+	border: solid 1px #fff;
+	background: none;
+}
+
+.ddGallery-fullScreen > div > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	background: #000;
+	width: 14px;
+	height: 14px;
+	border-radius: 100px;
+}
+
+.ddGallery-fullScreen.active > div > div {
+	top: 4px;
+	left: 4px;
+	width: 6px;
+	height: 6px;
+	background: #fff;
+	border-radius: 0;
+}
+
+.ddGallery-fullScreen.active:hover > div > div {
+	background: #fff;
+}
+
+
+/* ZOOM BUTTON */
+.ddGallery-zoom {
+	float: right;
+	background: #000;
+	color: #ddd;
+	font-size: 11px;
+	padding: 6px;
+	white-space: nowrap;
+	font-weight: bold;
+	box-shadow: 0 0 5px #fff;
+	text-decoration: none;
+	border-radius: 5px;
+	margin: 0 5px;
+}
+
+.ddGallery-zoom:hover {
+	background: #42BDFF;
+	color: #fff;
+}
+
+.ddGallery-zoom.active {
+	opacity: .3;
+}
+
+.ddGallery-zoom.active:hover {
+	opacity: 1;
+}
+
+.ddGallery-zoom:after {
+	content: '+ ZOOM';
+}
+
+.ddGallery-zoom.active:after {
+	content: '– ZOOM';
+}
+
+
+/* CAPTIONS */
+.ddGallery-caption {
+	background: rgb(0, 0, 0);
+	background: rgba(0, 0, 0, 0.5);
+	padding: 7px;
+	color: #ddd;
+	font-size: 13px;
+	text-align: left;
+}
+
+.ddGallery-externalCaptions {}
+
+
+/* CONTROL TAB */
+.ddGallery-control-tab {
+	background: rgb(0, 0, 0);
+	background: rgba(0, 0, 0, 0.5);
+	border-color: #c7c7c7;
+	width: 100px;
+	height: 11px;
+	text-align: center;
+	color: #c7c7c7;
+	border-radius: 5px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	font-size: 9px;
+	font-family: sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+	cursor: pointer;
+	/* left: centered by script */
+	bottom: 0;
+}
+
+.ddGallery-control-tab:before {
+	content: ': : : : : : :';
+}
+
+.ddGallery-control-tab:hover,
+.ddGallery-control-tab.pinned:hover{
+	background: #ddd;
+	background: -webkit-linear-gradient(rgba(221,221,221,1), rgba(0,0,0,.5));
+	background: -moz-linear-gradient(top,  rgba(221,221,221,1),  rgba(0,0,0,.5));
+	background: -o-linear-gradient(rgba(221,221,221,1), rgba(0,0,0,0.5));
+	background: linear-gradient(rgba(221,221,221,1), rgba(0,0,0,.5));
+}
+
+.ddGallery-control-tab.pinned {
+	background: rgb(119,119,119);
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(119,119,119,1)), to(rgba(0,0,0,.5)));
+	background: -webkit-linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
+	background: -moz-linear-gradient(top,  rgba(119,119,119,1),  rgba(0,0,0,.5));
+	background: -o-linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
+	background: linear-gradient(rgba(119,119,119,1), rgba(0,0,0,.5));
+}
+
+
+/* ARROWS */
+.ddGallery-arrows {
+	background: #000;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+	width: 4%;
+	height: 35%;
+	margin: 0 7px;
+}
+
+.ddGallery-arrows:hover {
+	background: #42BDFF;
+	box-shadow: 0 0 5px #fff;
+}
+
+.ddGallery-arrow-left {
+	left: 0;
+}
+
+.ddGallery-arrow-right {
+	right: 0;
+}
+
+.ddGallery-arrow-left .arrow {
+	border-right-color: #fff;
+	border-right-color: rgba(255, 255, 255, 0.5);
+}
+
+.ddGallery-arrow-right .arrow {
+	border-left-color: #fff;
+	border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+.ddGallery-arrow-left:hover .arrow {
+	border-right-color: #fff;
+}
+
+.ddGallery-arrow-right:hover .arrow {
+	border-left-color: #fff;
+}
+	
+
+/* FULL-SCREEN ARROWS */
+.ddGallery-main.fullScreen .ddGallery-arrows {}
+.ddGallery-main.fullScreen .ddGallery-arrows:hover {}
+.ddGallery-main.fullScreen .ddGallery-arrow-left {}
+.ddGallery-main.fullScreen .ddGallery-arrow-right {}
+
+
+/* THUMBNAIL BUTTONS */
+.ddGallery-thumbs-wrapper {
+	background: #000;
+	background: rgba(0, 0, 0, 0.8);
+	border-top: solid 1px #222;
+	box-shadow: 0 0 10px #000;
+}
+
+.ddGallery-thumbs {
+	padding: 0 7px;
+}
+
+.ddGallery-thumbs a {
+	background: #000 center center no-repeat;
+	border: solid #333 2px;
+	border-radius: 7px;
+	margin: 5px 2px;
+	width: 65px;
+	height: 45px;
+}
+
+.ddGallery-thumbs a:hover {
+	border-color: #414141;
+	box-shadow: 0 0 10px #fff;
+}
+
+.ddGallery-thumbs a.selected {
+	border-color: #ccc;
+	box-shadow: 0 0 5px #fff;
+}
+
+
+/* THUMBNAIL ITEM NUMBERS */
+.ddGallery-thumbs a .ddGallery-number {
+	position: absolute;
+	top: -5px;
+	left: -7px;
+	display: block;
+	width: 12px;
+	height: 12px;
+	padding: 3px;
+	line-height: 12px;
+	border-radius: 20px;
+	text-align: center;
+	font-family: "Impact",sans-serif;
+	font-size: 12px;
+	color: rgba(220,220,220, 0.8);
+	text-decoration: none;
+	background: rgba(0,0,0, 0.65);
+	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
+	border: solid 2px rgba(220,220,220, 0.8);	
+}
+
+.ddGallery-thumbs a.selected .ddGallery-number {
+	background: #42BDFF;
+	color: #fff;
+	border-color: #fff;
+	box-shadow: 0 0 10px #fff;
+}
+
+
+/* THUMBNAIL WATERMARKS */
+.ddGallery-thumbs a .ddGallery-watermark {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.ddGallery-thumbs a.img .ddGallery-watermark,
+.ddGallery-thumbs a.clickable .ddGallery-watermark {}
+
+.ddGallery-thumbs a.div .ddGallery-watermark {}
+
+.ddGallery-thumbs a.iframe .ddGallery-watermark {}
+
+.ddGallery-thumbs a.youtube .ddGallery-watermark,
+.ddGallery-thumbs a.vimeo .ddGallery-watermark {
+	background: url(images/playbutton.png) center center no-repeat;
+}
+
+
+/* DOT NAVIGATION: PLAIN */
+.ddGallery-dotNav {
+	position: absolute;
+	bottom: -20px;
+	width: 100%;
+	height: 20px;
+	text-align: center;
+}
+
+.ddGallery-dotNav .dot {
+	position: relative;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	margin: 2px;
+	border-radius: 30px;
+	width: 7px;
+	height: 7px;
+	background: #777;
+	vertical-align: middle;
+}
+
+.ddGallery-dotNav .dot:hover {
+	background: #42BDFF;
+}
+
+.ddGallery-dotNav .dot.selected {
+	background: #000;
+	width: 9px;
+	height: 9px;
+}
+
+
+/* DOT NAVIGATION: NUMBERED */
+.ddGallery-dotNav .number {
+	position: relative;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	margin: 2px;
+	width: 12px;
+	height: 12px;
+	padding: 3px;
+	line-height: 12px;
+	border-radius: 20px;
+	text-align: center;
+	font-family: "Impact",sans-serif;
+	font-size: 12px;
+	color: rgba(220,220,220, 0.8);
+	text-decoration: none;
+	background: rgba(0,0,0, 0.65);
+	box-shadow: 0 1px 5px rgba(0,0,0, 0.6);
+	border: solid 1px rgba(220,220,220, 0.8);	
+}
+
+.ddGallery-dotNav .number:hover {
+	background: #000;
+}
+
+.ddGallery-dotNav .number.selected {
+	background: #42BDFF;
+	color: #fff;
+	border-color: #fff;
+	box-shadow: 0 0 10px #fff;
+}
+
+
+/* /////////////////////////////////////////////////////
+ *
+ * PROGRESSIVE INTERNET EXPLORER (PIE) SUPPORT
+ * Project website & download: http://css3pie.com/ 
+ *
+ * IMPORTANT!:
+ *   - The url path to the PIE.htc file is relative to the HTML file NOT the CSS file.
+ *   - The PIE.htc file must be served from the same domain.
+ *   - Please visit the project website for specifics on installation and usage.
+ *
+//////////////////////////////////////////////////////*/
+
+.ddGallery-count,
+
+.ddGallery-fullScreen,
+.ddGallery-fullScreen div,
+
+.ddGallery-zoom,
+
+.ddGallery-caption,
+.ddGallery-externalCaptions,
+
+.ddGallery-control-tab,
+
+.ddGallery-arrows,
+.ddGallery-arrow-right .arrow,
+.ddGallery-arrow-left .arrow,
+
+.ddGallery-thumbs,
+.ddGallery-thumbs a,
+.ddGallery-thumbs a .ddGallery-watermark,
+.ddGallery-thumbs a .ddGallery-number,
+
+.ddGallery-dotNav .dot,
+.ddGallery-dotNav .number {
+
+	/* behavior: url(PIE.htc); */
+	
+}
+
+

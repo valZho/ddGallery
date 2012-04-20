@@ -1,0 +1,385 @@
+/* Pretty printing styles. Used with prettify.js. */
+
+/* SPAN elements with the classes below are added by prettyprint. */
+.pln { color: #000 }  /* plain text */
+
+@media screen {
+  .str { color: #080 }  /* string content */
+  .kwd { color: #008 }  /* a keyword */
+  .com { color: #800 }  /* a comment */
+  .typ { color: #606 }  /* a type name */
+  .lit { color: #066 }  /* a literal value */
+  /* punctuation, lisp open bracket, lisp close bracket */
+  .pun, .opn, .clo { color: #660 }
+  .tag { color: #008 }  /* a markup tag name */
+  .atn { color: #606 }  /* a markup attribute name */
+  .atv { color: #080 }  /* a markup attribute value */
+  .dec, .var { color: #606 }  /* a declaration; a variable name */
+  .fun { color: red }  /* a function name */
+}
+
+/* Use higher contrast and text-weight for printable form. */
+@media print, projection {
+  .str { color: #060 }
+  .kwd { color: #006; font-weight: bold }
+  .com { color: #600; font-style: italic }
+  .typ { color: #404; font-weight: bold }
+  .lit { color: #044 }
+  .pun, .opn, .clo { color: #440 }
+  .tag { color: #006; font-weight: bold }
+  .atn { color: #404 }
+  .atv { color: #060 }
+}
+
+/* Put a border around prettyprinted code snippets. */
+pre.prettyprint { padding: 2px; border: 1px solid #888; margin: 0; }
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0 } /* IE indents via margin-left */
+li.L0,
+li.L1,
+li.L2,
+li.L3,
+li.L4,
+li.L5,
+li.L6,
+li.L7,
+li.L8 { background: #eee; }
+/* Alternate shading for lines */
+li.L1,
+li.L3,
+li.L5,
+li.L7,
+li.L9 { background: none; }
+
+
+
+
+body {
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background: #aaa;
+}
+
+#content {
+	width: 1140px;
+	margin: 0 auto;
+}
+
+h1 {
+	background: #05519E;
+	border-bottom: 10px solid #777;
+	box-shadow: 0 0 20px #888;
+	padding: 20px 50px;
+	color: #fff;
+	text-shadow: 0 2px 5px #333;
+	font-size: 58px;
+}
+
+h1 span {
+	font-size: 12px;
+}
+
+h1 a {
+	color: #fff;
+}
+
+a {
+	color: #05519E;
+}
+
+a:hover {
+	color: #42BDFF;
+}
+
+#mainGallery {
+	width: 640px;
+	height: 480px;
+	margin-bottom: 30px;
+}
+	
+#galleryFloat {
+	width: 640px;
+	background: #eee;
+	padding: 20px;
+	box-shadow: 0 0 20px #888;
+	behavior: url(PIE.php); 
+}
+
+#galleryFloat h1 {
+	margin-left: -20px;
+	margin-right: -20px;
+	font-size: 26px;
+	box-shadow: none;
+	behavior: url(PIE.php); 
+}
+
+#galleryFloat h1:first-child {
+	margin-top: -20px;
+}
+
+#controlsFloat {
+	padding: 0 20px 20px;
+	background: #eee;
+	box-shadow: 0 0 20px #888;
+	width: 400px;
+	behavior: url(PIE.php); 
+}
+
+#controlsFloat h1 {
+	margin-left: -20px;
+	margin-right: -20px;
+	font-size: 26px;
+	box-shadow: none;
+	behavior: url(PIE.php); 
+}
+
+#controlsFloat h1:first-child {
+	margin-top: 0;
+}
+
+
+#options-wrapper {
+	height: 500px;
+	overflow: auto;
+	box-shadow: inset 0 0 10px #777;
+	border: solid 1px #aaa;
+	padding: 10px;
+	behavior: url(PIE.php); 
+}
+
+ol > li {
+	margin-top: 20px;
+}
+
+ul > li {
+	margin-top: 5px;
+}
+
+.float-left {
+	float: left;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+.float-right {
+	float: right;
+	margin: 0 0 20px 20px;
+	padding: 0;
+}
+
+.clear-float {
+	clear: both;
+}
+
+fieldset {
+	margin: 10px;
+	border: solid 10px #aaa;
+	background: #e0e0e0;
+}
+
+#options-wrapper fieldset {
+	margin-top: 20px;
+	width: 308px;
+}
+
+#options-wrapper fieldset:first-child {
+	margin-top: 10px;
+}
+
+fieldset > legend + p, fieldset > p { margin-top: 0; }
+fieldset :last-child { margin-bottom: 0; }
+
+legend {
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 5px 10px;
+	border-radius: 7px;
+	background: #aaa;
+	color: #fff;
+	text-shadow: 0 2px 3px #777;
+	behavior: url(PIE.php); 
+}
+
+.desc {
+	padding-top: 5px;
+	color: #888;
+}
+
+strong {
+	color: #05519E;
+	font-size: 18px;
+}
+
+#controlsFloat p {
+	font-size: 12px;
+}
+
+.submits {
+	text-align: center;
+}
+
+.submits select,
+.submits input {
+	font-size: 20px;
+	width: 40%;
+}
+
+button {
+	font-size: 12px;
+	padding: 5px;
+}
+
+.codeblock {
+	border: solid #888;
+	background: #E3E1DA;
+	overflow: auto;
+	padding: 10px;
+}
+
+pre {
+	border: none !important;
+}
+
+textarea {
+	width: 330px;
+	height: 75px;
+}
+
+#externalCaption {
+	margin: 20px 0 0;
+	border: solid 2px #777;
+	border-left-color: #aaa;
+	border-right-color: #aaa;
+	border-bottom-color: #fff;
+	box-shadow: inset 0 0 10px #000;
+	padding: 5px;
+	background: #ccc;
+	behavior: url(PIE.php); 
+}
+
+#externalCaption + p {
+	margin-top: 5px;
+}
+
+#externalCaption p {
+	margin: 0;
+	min-height: 20px;
+	line-height: 20px;
+	overflow: hidden;
+	color: #888;
+	font-size: 14px;
+	text-transform: uppercase;
+	text-align: center;
+	text-shadow: 0 -1px 1px #000, 0 1px 1px #fff;
+}
+
+.testDiv {
+	background: #fff;
+	padding:100px;
+	box-shadow: inset 0 0 50px #ccc;
+	behavior: url(PIE.php); 
+}
+
+.testDiv2 {
+	padding: 20px;
+	background: #444;
+	color: #fff;
+}
+
+#debug-panel {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 250px;
+	padding: 10px;
+	color: #000;
+	background: #fff;
+	opacity: .95;
+	font-size: 10px;
+	z-index: 1000;
+	box-shadow: 0 0 50px #000, 0 0 20px #000;
+	behavior: url(PIE.php); 
+}
+
+#ddGallery-debug {
+	margin: 10px 0 0 0;
+	padding-left: 20px;
+	width: 200px;
+}
+
+#ddGallery-debug li {
+	margin: 0;
+}
+
+#clear-debug {
+	font-size: 12px;
+}
+
+#exSingleImage {
+	width:200px;
+	height:271px;
+}
+
+#youtubePlaylist {
+	width:320px;
+	height:269px;
+}
+
+.tabGroup {
+	margin-bottom: 0;
+	padding: 10px 10px 0;
+	background: #aaa;
+	background: -webkit-linear-gradient(#ddd, #aaa);
+	background: -moz-linear-gradient(top,  #ddd,  #aaa);
+	background: -o-linear-gradient(#ddd, #aaa);
+	background: linear-gradient(#ddd, #aaa);
+}
+
+.optTab {
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	padding: 5px;
+	margin: 2px;
+	background: #777;
+	background: -webkit-linear-gradient(#aaa, #777);
+	background: -moz-linear-gradient(top,  #aaa,  #777);
+	background: -o-linear-gradient(#aaa, #777);
+	background: linear-gradient(#aaa, #777);
+	font-size: 13px;
+	color: #ddd;
+	text-decoration: none;
+	border-radius: 5px;
+	border-bottom: solid 1px #777;
+	border: solid 1px #999;
+	border-top-color: #ddd;
+	border-bottom-color: #666;	
+}
+
+.optTab:hover {
+	background: #42BDFF;
+	color: #fff;
+}
+
+.optTab.selected {
+	background: #42BDFF;
+	box-shadow: 0 0 10px rgba(255,255,255, .5), inset 0 0 10px rgba(255,255,255, 0.6);
+	border-bottom: solid 1px #aaa;
+	color: #fff;
+	border-color: #ddd;
+	border-top-color: #bbb;
+	border-bottom-color: #fff;
+}
+
+#optionForm {
+	border: solid 1px #aaa;
+	background: #aaa;
+}
+
+#optionForm fieldset {
+	border: none;
+	width: auto;
+}

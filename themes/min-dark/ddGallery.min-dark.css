@@ -1,27 +1,23 @@
 /* /////////////////////////////////////////////////////
  *
-<<<<<<< HEAD
- * Minimalist Theme for ddGallery
-=======
- * Minimalist: Light Theme for ddGallery
+ * Minimalist: Dark Theme for ddGallery
  * Author: Darren Doyle
->>>>>>> v 3.3
  * http://inventurous.net/ddgallery
  *
 //////////////////////////////////////////////////////*/
 
 /* GALLERY */
 .ddGallery-main {
-	border: solid 1px #000;
+	border: solid 1px #fff;
 }
 
 .ddGallery-main.fullScreen {
-	background: #fff;
+	background: #000;
 }
 
 /*  STAGE */
 .ddGallery-stage-wrapper {
-	background: #fff;
+	background: #000;
 	box-shadow: none;
 }
 
@@ -44,7 +40,7 @@
 .ddGallery-iframe-wrapper,
 .ddGallery-youtube-wrapper,
 .ddGallery-vimeo-wrapper {
-	background: #fff url(images/loading.gif) center center no-repeat;
+	background: #000 url(images/loading.gif) center center no-repeat;
 	box-shadow: none;
 	overflow: hidden;
 }
@@ -54,9 +50,9 @@
 .ddGallery-count {
 	top: -7px;
 	left: -7px;
-	background: #fff;
-	color: #000;
-	border: solid 1px #000;
+	background: #000;
+	color: #fff;
+	border: solid 1px #fff;
 	font-weight: normal;
 	box-shadow: none;
 	padding: 6px;
@@ -84,11 +80,11 @@
 
 /*  FULL SCREEN BUTTON */
 .ddGallery-fullScreen {
-	background: #fff;
-	color: #999;
+	background: #000;
+	color: #777;
 	box-shadow: none;
 	border-radius: 0;
-	border: solid 1px #000;
+	border: solid 1px #fff;
 	margin: 0 0 0 -1px;
 }
 
@@ -98,14 +94,14 @@
 
 .ddGallery-fullScreen:hover,
 .ddGallery-fullScreen:hover > div > div {
-	background: #fff;
-	color: #000;
+	background: #000;
+	color: #fff;
 	box-shadow: inset 0 0 10px #42BDFF;
 }
 
 .ddGallery-fullScreen.active {
 	opacity: 1;
-	color: #000;
+	color: #fff;
 }
 
 .ddGallery-fullScreen > div,
@@ -116,23 +112,23 @@
 
 /*  ZOOM BUTTON */
 .ddGallery-zoom {
-	background: #fff;
-	color: #999;
+	background: #000;
+	color: #777;
 	box-shadow: none;
 	border-radius: 0;
 	margin: 0;
-	border: solid 1px #000;
+	border: solid 1px #fff;
 }
 
 .ddGallery-zoom:hover {
-	background: #fff;
-	color: #000;
+	background: #000;
+	color: #fff;
 	box-shadow: inset 0 0 10px #42BDFF;
 }
 
 .ddGallery-zoom.active {
 	opacity: 1;
-	color: #000;
+	color: #fff;
 }
 
 .ddGallery-zoom:after {
@@ -145,10 +141,10 @@
 
 /*  CAPTIONS */
 .ddGallery-caption {
-	background: #fff;
-	background: rgba(255, 255, 255, 0.8);
-	border-top: solid 1px #000;
-	color: #000;
+	background: #000;
+	background: rgba(0, 0, 0, 0.8);
+	border-top: solid 1px #fff;
+	color: #fff;
 }
 
 .ddGallery-externalCaptions {}
@@ -156,8 +152,8 @@
 
 /*  CONTROL TAB */
 .ddGallery-control-tab {
-	background: #fff;
-	border: solid 1px #000;
+	background: #000;
+	border: solid 1px #fff;
 	width: 100px;
 	height: 9px;
 	text-align: center;
@@ -172,28 +168,28 @@
 
 .ddGallery-control-tab:hover,
 .ddGallery-control-tab.pinned:hover{
-	background: #fff;
+	background: #000;
 	box-shadow: inset 0 0 5px #42BDFF;
 }
 
 .ddGallery-control-tab.pinned {
-	background: #fff;
-	border-bottom: solid 1px #000;
+	background: #000;
+	border-bottom: solid 1px #fff;
 }
 
 
 /*  ARROWS */
 .ddGallery-arrows {
-	background: #fff;
+	background: #000;
 	border-radius: 0;
 	width: 4%;
 	height: 45%;
 	margin: 0 -7px;
-	border: solid 1px #000;
+	border: solid 1px #fff;
 }
 
 .ddGallery-arrows:hover {
-	background: #fff;
+	background: #000;
 	box-shadow: inset 0 0 10px #42BDFF;
 }
 
@@ -207,12 +203,12 @@
 
 .ddGallery-arrow-left .arrow,
 .ddGallery-arrow-left:hover .arrow {
-	border-right-color: #000;
+	border-right-color: #fff;
 }
 
 .ddGallery-arrow-right .arrow,
 .ddGallery-arrow-right:hover .arrow {
-	border-left-color: #000;
+	border-left-color: #fff;
 }
 
 	
@@ -226,9 +222,9 @@
 
 /*  THUMBNAIL BUTTONS */
 .ddGallery-thumbs-wrapper {
-	background: #fff;
-	background: rgba(255,255,255, 0.8);
-	border-top: solid 1px #000;
+	background: #000;
+	background: rgba(0,0,0, 0.8);
+	border-top: solid 1px #fff;
 	box-shadow: none;
 }
 
@@ -237,8 +233,8 @@
 }
 
 .ddGallery-thumbs a {
-	background: #000 center center no-repeat;
-	border: solid #000 1px;
+	background: #fff center center no-repeat;
+	border: solid #fff 1px;
 	border-radius: 0;
 	margin: 5px 5px 5px 0;
 	width: 50px;
@@ -246,7 +242,7 @@
 }
 
 .ddGallery-thumbs a:hover {
-	border-color: #000;
+	border-color: #fff;
 	box-shadow: none;
 }
 
@@ -274,16 +270,15 @@
 	text-align: center;
 	font-family: inherit;
 	font-size: 10px;
-	color: #000;
-	background: #fff;
+	color: #fff;
+	background: #000;
 	box-shadow: none;
-	border: solid 1px #000;	
+	border: solid 1px #fff;	
 }
 
 .ddGallery-thumbs a.selected .ddGallery-number {
 	background: #42BDFF;
-	color: #fff;
-	border-color: #000;
+	border-color: #fff;
 	box-shadow: none;
 }
 
@@ -310,7 +305,7 @@
 /*  DOT NAVIGATION: PLAIN */
 .ddGallery-dotNav .dot {
 	background: none;
-	border: solid 1px #000;
+	border: solid 1px #fff;
 }
 
 .ddGallery-dotNav .dot:hover {
@@ -318,7 +313,7 @@
 }
 
 .ddGallery-dotNav .dot.selected {
-	background: #000;
+	background: #fff;
 	width: 7px;
 	height: 7px;
 }
@@ -334,20 +329,19 @@
 	text-align: center;
 	font-family: inherit;
 	font-size: 10px;
-	color: #000;
-	background: #fff;
+	color: #fff;
+	background: #000;
 	box-shadow: none;
-	border: solid 1px #000;	
+	border: solid 1px #fff;	
 }
 
 .ddGallery-dotNav .number:hover {
-	background: #fff;
+	background: #000;
 	box-shadow: inset 0 0 10px #42BDFF;
 }
 
 .ddGallery-dotNav .number.selected {
 	background: #42BDFF;
-	color: #fff;
-	border-color: #000;
+	border-color: #fff;
 	box-shadow: none;
 };

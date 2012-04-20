@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.2 :: 2012-04-18
+ * jQuery ddGallery v3.3 :: 2012-04-18
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -112,10 +112,18 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		dd.touched=false;
 		dd.fullScreen=false;
 		dd.navSource = '';
+		dd.resizer = {
+			timer : '',
+			cW : dd.gal.width(),
+			cH : dd.gal.height(),
+			wW : $(window).width(),
+			wH : $(window).height()
+		};
+		dd.animList = [];
 		dd.capSizes = {heights:{},borders:{'t':0,'b':0},margins:{'t':0,'b':0},padding:{'t':0,'b':0}};
 		
 		dd.debug = $('#ddGallery-debug');
-		
+
 		// draw gallery
 		dd.draw(dd);
     };
@@ -204,18 +212,10 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			};
 			
 			// animation sanity check
-			switch (dd.settings.stageRotateType) {
-				case 'fade':
-				case 'pushH':
-				case 'pushV':
-				case 'slideH':
-				case 'slideV':
-				case 'drop':
-				case 'lift':
-					break;
-				default:
-					dd.settings.stageRotateType = 'fade';			
-			};
+			dd.animList = ['fade', 'pushV', 'pushH', 'slideH', 'slideV', 'drop', 'lift'];
+			if ( $.inArray(dd.settings.stageRotateType, dd.animList) === -1 && dd.settings.stageRotateType != 'random' ) {
+				dd.settings.stageRotateType = 'fade';
+			}
 			
 			// start item sanity check
 			dd.settings.startItem = parseInt(dd.settings.startItem);
@@ -577,8 +577,8 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						linkTarget = thisThumb.attr('linkTarget'), // target for the clickable image link
 						tL = parseInt(dd.thumbs.css('left')),
 						thumbL = parseInt(thisThumb.position().left) - (parseInt(thisThumb.css('border-left-width'))) - (parseInt(thisThumb.css('margin-left'))),
-						newLeft,
-						wW,
+						anim = dd.settings.stageRotateType,
+						newLeft, wW,
 						isLast = false,
 						dir = (dd.curItem==1
 							&& ($(this).index()+1)==dd.itemCount
@@ -589,6 +589,11 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									? true
 									: (dd.curItem < ($(this).index()+1));
 					
+					// set animation type
+					if (dd.settings.stageRotateType=='random') {
+						anim = dd.animList[parseInt(Math.random()*dd.animList.length)];
+					};						
+
 					// set stage height
 					dd.stageWrap.height( (dd.settings.thumbsPush || (dd.settings.thumbsPushOnFull && dd.fullScreen)) ? dd.gal.height()-dd.controlH : dd.gal.height() );
 					
@@ -624,7 +629,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						// stop any youtube videos from playing
 						dd.stage.find('.ddGallery-youtube-wrapper').each(function(){
 							dd.autoPause = true;
-							dd.youtubePlayers[$(this).attr('id')].pauseVideo();
+							try {
+								dd.youtubePlayers[$(this).attr('id')].pauseVideo();
+							} catch (err) {};
 						});
 						
 						// if still autopinned on next, unpin
@@ -647,7 +654,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						
 						// animate out previous item
 						if (dd.stage.find(".selected").length > 0) {
-							eval('dd.animOut_'+dd.settings.stageRotateType+'(dd.stage.find(".selected"),type,typeFrom,dir);');
+							eval('dd.animOut_'+anim+'(dd.stage.find(".selected"),type,typeFrom,dir);');
 						};
 						
 						
@@ -666,7 +673,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.children('#'+itemId).load(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in');
+										dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in', anim);
 									});
 									break;
 								
@@ -679,7 +686,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.find('#'+itemId).load(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in');
+										dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in', anim);
 									});
 									break;
 									
@@ -692,7 +699,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.append('<div class="ddGallery-div-wrapper ddGallery-item" id="'+itemId+'" style="opacity:0;position:absolute;width:100%;height:100%;overflow:auto"><div class="'+sourceClass+'" id="'+sourceId+'">'+dd.orig.find('.'+itemId).html()+'</div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
+										eval('dd.animIn_'+anim+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
 									
@@ -704,7 +711,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.append('<div class="ddGallery-iframe-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:100%;overflow:auto" id="'+itemId+'"><iframe allowfullscreen scrolling="auto" style="border:none;width:100%;height:100%;margin-bottom:-5px;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></iframe></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
+										eval('dd.animIn_'+anim+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
 									
@@ -717,7 +724,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.append('<div class="ddGallery-youtube-wrapper ddGallery-item" style="opacity:0;position:absolute;width:100%;height:100%;overflow:hidden" id="'+itemId+'"><div id="'+itemId+'-video"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
+										eval('dd.animIn_'+anim+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 													
 										dd.youtubePlayers[itemId] = new window['YT'].Player(itemId+'-video', {
 											height: "100%",
@@ -818,7 +825,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 									dd.stage.append('<div class="ddGallery-vimeo-wrapper" style="opacity:0;position:absolute;width:100%;height:100%;overflow:hidden" id="'+itemId+'"><iframe allowfullscreen scrolling="auto" style="border:none;width:100%;height:100%;margin-bottom:-5px;" class="'+sourceClass+'" id="'+sourceId+'" src="'+url+'"></div></div>').ready(function(){
 										dd.stage.removeClass('loading');
 										dd.stage.find('#'+itemId).addClass('selected');
-										eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
+										eval('dd.animIn_'+anim+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 									});
 									break;
 							};
@@ -831,16 +838,16 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 							// resize items anyway (in case stage dimensions changed)
 							if (type=='img') {
 								dd.stage.removeClass('loading');
-								dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in');
+								dd.setImageDimensions(dd.stage.children('#'+itemId), typeFrom, dir, 'in', anim);
 							
 							} else if (type=='clickable') {
 								dd.stage.removeClass('loading');
-								dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in');
+								dd.setImageDimensions(dd.stage.find('#'+itemId), typeFrom, dir, 'in', anim);
 							
 							} else {
 								dd.showZoom(false, dd.settings.stageRotateSpeed);
 								dd.stage.removeClass('loading');
-								eval('dd.animIn_'+dd.settings.stageRotateType+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
+								eval('dd.animIn_'+anim+'(dd.gal.find("#"+itemId),type,typeFrom,dir);');
 								
 								// YouTube playlist keep playing
 								if (dd.settings.playlist && !dd.userPaused) {
@@ -910,16 +917,13 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						// thumbnail is off screen to the right
 						if ( (thumbL + dd.thumbW + tL) > wW ) {
 							
-							dd.debug.html('thumb right:'+(thumbL + dd.thumbW + tL)+' wW:'+wW);
-							
 							newLeft = wW - (thumbL + dd.thumbW + parseInt(dd.thumbs.css('padding-left')))
 							newLeft = (newLeft < dd.maxScroll) ? dd.maxScroll : (newLeft > 0) ? 0 : newLeft;
 							dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.thumbsScrollSpeed);
 							
 						// thumbnail is off screen to the left
 						} else if ( (thumbL + tL) < 0 ) {
-							dd.debug.html('thumb left:'+(thumbL + tL)+' wW:'+wW);
-							
+
 							newLeft = 0 - thumbL;
 							dd.thumbs.stop(1,0).animate({'left':newLeft}, dd.settings.thumbsScrollSpeed);
 							
@@ -1140,7 +1144,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					// zoom on?
 					if (dd.zoom.is('.active')) {
 
-						/* do nothing */
+						// do nothing 
 					
 					// zoom off?
 					} else {
@@ -1216,7 +1220,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					if (dd.zoom.is('.active')) {
 						dd.zoom.removeClass('active');
 						image.off();
-						dd.setImageDimensions(image, '', '', 'unzoom');
+						dd.setImageDimensions(image, '', '', 'unzoom', '');
 					
 					// activate
 					} else {
@@ -1404,12 +1408,16 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				
 				//------------------------------------
 				
-				///////////////////
-				// WINDOW RESIZE //
-				///////////////////
-				$(window).on('resize.'+dd.id, function(){
-					clearTimeout(dd.windowResizer);
-					dd.windowResizer = setTimeout(function(){
+				//////////////////////
+				// CONTAINER RESIZE //
+				//////////////////////
+				dd.resizer.timer = setInterval(function(){
+					var cW = dd.gal.width(),
+						cH = dd.gal.height(),
+						wW = $(window).width(),
+						wH = $(window).height();
+					
+					if ( (cW != dd.resizer.cW || cH != dd.resizer.cH) || ((wW != dd.resizer.wW || wH != dd.resizer.wH) && dd.fullScreen) ) {
 						if (!dd.fullScreen) {
 							dd.gal.css({
 								'z-index':'',
@@ -1433,9 +1441,17 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 						dd.resizeMe(dd.fullScreen);
 						
-					}, 100);
-				});
+						dd.resizer.cW = cW;
+						dd.resizer.cH = cH;
+						dd.resizer.wW = wW;
+						dd.resizer.wH = wH;
 						
+					};
+					
+				}, 300);
+				
+				//------------------------------------
+				
 				
 			});
 		},		
@@ -1465,6 +1481,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			// no longer initial item
 			dd.initial=false;
+			
+			// clear random for next pass
+			dd.animRand = -1;
 			
 		},
 		
@@ -1689,7 +1708,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			// resize current item
 			if ( cur.is('img') ) {
-				dd.setImageDimensions(cur, '', '', 'resize');
+				dd.setImageDimensions(cur, '', '', 'resize', '');
 			};
 				
 		},
@@ -1743,7 +1762,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		//////////////////////////
 		// SET IMAGE DIMENSIONS //
 		//////////////////////////
-		setImageDimensions : function(image, typeFrom, dir, target) {
+		setImageDimensions : function(image, typeFrom, dir, target, anim) {
 			var dd = this,
 				clickable = false,
 				itemId = image.attr('id'),
@@ -1841,7 +1860,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				
 			image.css({'display':'block'}).animate({'width':iW, 'height':iH, 'left':((sW/2)-(iW/2)), 'top':((sH/2)-(iH/2))}, speed, function(){
 				if (clickable) { image = image.parent('a'); };
-				if (target=='in') { eval('dd.animIn_'+dd.settings.stageRotateType+'(image,"img",typeFrom,dir);'); };
+				if (target=='in') { eval('dd.animIn_'+anim+'(image,"img",typeFrom,dir);'); };
 			});
 		},
 		
@@ -1893,12 +1912,12 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					capH = dd.capSizes.heights[id];
 					dd.caption.animate({
 						'bottom' : conH,
-						'height' : dd.capSizes.heights[id],
+						'height' : dd.capSizes.heights[id]
 					}, speed).removeClass('collapsed');
 				} else {
 					dd.caption.animate({
 						'height' : 0,
-						'bottom' : conH,
+						'bottom' : conH
 					}, speed).addClass('collapsed');;
 				};
 			};
@@ -1948,8 +1967,9 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			dd.gal.off();
 			$(document).off('keydown.'+dd.id);
 			
-			// stop timer
+			// stop timers
 			clearTimeout(dd.rotator);
+			clearInterval(dd.resizer.timer);
 			
 			// stop any animations
 			dd.gal.find().stop(1,0);
@@ -1969,31 +1989,30 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 	// PLUGIN CALL //
 	/////////////////
 	$.fn.ddGallery = function(options, goTo) { 
-		var control='load';
+		var control='load', args,
+			extControls = [
+				'goTo',
+				'togglePlay',
+				'play',
+				'pause',
+				'last',
+				'next',
+				'fullScreen',
+				'zoom',
+				'showControls',
+				'hideControls',
+				'toggleControls'
+			];
+		
+		options = (options==undefined) ? {} : options;
 		
 		// listen for external controls
-		switch (options) {
-			
-			case 'goTo' :
-			case 'togglePlay' :
-			case 'play' :
-			case 'pause' :
-			case 'last' :
-			case 'next' :
-			case 'fullScreen' :
-			case 'zoom' :
-			case 'showControls' :
-			case 'hideControls' :
-			case 'toggleControls' :
-				control = options;
-				break;
-			
-			// get user options
-			case 'destroy' :
-			default :
-				var args = (typeof options === 'object' || !options ) ? options : arguments[1];
-				break;
+		if ( (typeof options !== 'object') && $.inArray(options, extControls)>=0 ) {
+			control = options;
+		} else {
+			args = (typeof options === 'object' || !options ) ? options : arguments[1];
 		};
+		
 		
 		// loop through supplied elements
 		this.each(function(){
