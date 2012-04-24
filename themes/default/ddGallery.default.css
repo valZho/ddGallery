@@ -491,38 +491,26 @@
  *
 //////////////////////////////////////////////////////*/
 
+/* COPY THIS RULE INTO A CUSTOM CSS FILE BEFORE USING, */
+/* AND SUPPLY THE CORRECT PATH TO the PIE.htc FILE */
 .ddGallery-count,
-
 .ddGallery-fullScreen,
 .ddGallery-fullScreen div,
-
 .ddGallery-stage-wrapper,
-
 .ddGallery-zoom,
-
 .ddGallery-caption,
 .ddGallery-externalCaptions,
-
 .ddGallery-control-tab,
-
 .ddGallery-arrow-wrap,
 .ddGallery-arrow,
 .ddGallery-arrow span,
-
 .ddGallery-thumbs,
 /* BROKEN IN CURRENT RELEASE OF CSS3PIE */
 /*.ddGallery-thumbs a,*/ 
 .ddGallery-thumbs a .ddGallery-watermark,
 .ddGallery-thumbs a .ddGallery-number,
-
 .ddGallery-dotNav,
 .ddGallery-dotNav .dot,
 .ddGallery-dotNav .number
 
-{
-
-	behavior: url(PIE.php);
-	
-}
-
-
+{ /* behavior: url(PIE.htc); */ }

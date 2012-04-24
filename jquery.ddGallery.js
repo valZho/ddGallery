@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.1 :: 2012-04-20
+ * jQuery ddGallery v3.6.2 :: 2012-04-24
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -486,7 +486,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					// hide thumbs?
 					} else {	
 						// hide thumbs
-						dd.thumbWrap.css({'display':'none'});
+						dd.controls.css({'display':'none'});
 						
 						// controller height
 						dd.controlH = 0;
@@ -538,7 +538,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						
 						// hide the thumbs?
 						if (dd.settings.hideThumbs) {
-							dd.thumbWrap.css({'bottom':(-1 * dd.controlH)});
+							dd.controls.css({'height':0});
 						};
 						
 						// set initial caption position
@@ -1915,7 +1915,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			
 			// move the controller
 			if (con) { conH = dd.controlH; };
-			dd.thumbWrap.stop(1,0).animate({'bottom':(conH - dd.controlH)}, speed);
+			dd.controls.stop(1,0).animate({'height':conH}, speed);
 			
 			// move caption
 			if (dd.settings.captions){

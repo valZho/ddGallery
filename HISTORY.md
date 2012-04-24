@@ -1,6 +1,11 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6.2 :: 2012-04-24
+* [fix] control wrapper not collapsing properly
+* [fix] minor adjustments to css themes
+
+
 ### v3.6.1 :: 2012-04-20
 * [add] external command: "resize"
 
