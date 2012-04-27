@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.2 :: 2012-04-24
+ * jQuery ddGallery v3.6.3 :: 2012-04-27
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -348,7 +348,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 					
 						linkType = (href=='' || href==undefined)
 							? [,false] : (
-								href.match(/http:\/\/(?:www\.|)(vimeo|youtube)\.com(?:.*)((?:\/)([a-zA-Z0-9-_]+)(?:$|&|\?)|((?:[0-9]\/)|(?:embed\/)|(?:v\/)|(?:v=))([a-zA-Z0-9-_]+)(?:$|&|\?))/i)
+								href.match(/http:\/\/(?:www\.|)(vimeo|youtube)\.com(?:.*)((?:\/)([a-zA-Z0-9-_]+)(?:$|&|\?)|((?:[0-9]\/)|(?:embed\/)|(?:v\/)|(?:v=))([a-zA-Z0-9-_\#\=]+)(?:$|&|\?))/i)
 								|| href.match(/.*(?=\.(jpg|jpeg|gif|png)(?:$|\?))/i)
 								|| [,false]
 							);

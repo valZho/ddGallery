@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6.3 :: 2012-4-27
+* [fix] refined YouTube url parser
+
 ### v3.6.2 :: 2012-04-24
 * [fix] control wrapper not collapsing properly
 * [fix] minor adjustments to css themes
