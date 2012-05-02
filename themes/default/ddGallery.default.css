@@ -189,10 +189,13 @@
 
 
 /* CAPTIONS */
-.ddGallery-caption {
+.ddGallery-caption-wrapper {
 	background: #000;
 	background: rgba(0,0,0,0.5);
 	-pie-background: rgba(0,0,0,0.5);
+}
+
+.ddGallery-caption {
 	padding: 7px;
 	color: #ddd;
 	font-size: 13px;

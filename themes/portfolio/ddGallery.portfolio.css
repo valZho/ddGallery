@@ -132,14 +132,17 @@
 
 
 /* CAPTIONS */
-.ddGallery-caption {
+.ddGallery-caption-wrapper {
 	background: #fff;
 	-pie-background: #fff;
+	border-top: solid 1px #acacac;
+}
+
+.ddGallery-caption {
 	padding: 2px;
 	color: #999;
 	font-size: 12px;
 	text-align: right;
-	border-top: solid 1px #acacac;
 }
 
 .ddGallery-externalCaptions {}

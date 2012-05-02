@@ -140,11 +140,13 @@
 }
 
 /*  CAPTIONS */
-.ddGallery-caption {
+.ddGallery-caption-wrapper {
 	background: #000;
 	background: rgba(0, 0, 0, 0.8);
 	-pie-background: rgba(0, 0, 0, 0.8);
 	border-top: solid 1px #fff;
+
+.ddGallery-caption {
 	color: #fff;
 }
 

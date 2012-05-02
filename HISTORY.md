@@ -1,7 +1,11 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
-### v3.6.3 :: 2012-4-27
+### v3.6.4 :: 2012-05-02
+* [add] refinements to the captions: fade in/out text on caption change
+* [ref] refinements to caption CSS to better support multi-line captions
+
+### v3.6.3 :: 2012-04-27
 * [fix] refined YouTube url parser
 
 ### v3.6.2 :: 2012-04-24

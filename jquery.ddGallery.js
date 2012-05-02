@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.3 :: 2012-04-27
+ * jQuery ddGallery v3.6.4 :: 2012-05-02
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -894,24 +894,33 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 							
 						// add caption
-						dd.caption.attr('itemId',itemId).children('.ddGallery-caption').html(cap).ready(function(){
-							var showCon=false;
-								showCap=false;
-								
-							// show controller?
-							if (!dd.pinned) {
-								if ( dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen)) ) { showCon = true; };
-								
-								if (dd.settings.captions && cap) { showCap = true; }
+						dd.caption.attr('itemId',itemId).children('.ddGallery-caption').animate({'opacity':0}, dd.settings.captionHideSpeed/2, function(){
+							
+							var obj = $(this);
+							
+							obj.html(cap).ready(function(){
+								var showCon=false;
+									showCap=false;
 									
-								// move controls
-								dd.moveControls(showCon, showCap, dd.settings.stageRotateSpeed);
+								// show controller?
+								if (!dd.pinned) {
+									if ( dd.settings.thumbs && ((!dd.settings.hideThumbs || dd.hover) || (!dd.settings.hideThumbsOnFull && dd.fullScreen)) ) { showCon = true; };
+									
+									if (dd.settings.captions && cap) { showCap = true; }
+										
+									// move controls
+									dd.moveControls(showCon, showCap, dd.settings.stageRotateSpeed);
+									
+								};
 								
-								
-							};
-						
-							// ---CAPTION HIDE TIMER---
-							if (showCap) { dd.captionTimer(showCon); };
+								$.when(dd.caption).done(function(){
+									obj.animate({'opacity':1}, (dd.settings.captionHideSpeed/2));
+								});
+							
+								// ---CAPTION HIDE TIMER---
+								if (showCap) { dd.captionTimer(showCon); };
+
+							});
 						});
 						
 					};
