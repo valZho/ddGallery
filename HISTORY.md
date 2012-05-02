@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6.5 :: 2012-05-02
+* [fix] arrow drawing issues in IE6-7
+
 ### v3.6.4 :: 2012-05-02
 * [add] refinements to the captions: fade in/out text on caption change
 * [ref] refinements to caption CSS to better support multi-line captions

@@ -230,7 +230,7 @@
 }
 
 .ddGallery-control-tab:hover,
-.ddGallery-control-tab.pinned:hover{
+.ddGallery-control-tab.pinned:hover {
 	background: #ddd;
 	background: -webkit-linear-gradient(rgba(221,221,221,1), rgba(0,0,0,.5));
 	background: -moz-linear-gradient(top,  rgba(221,221,221,1),  rgba(0,0,0,.5));
@@ -291,21 +291,29 @@
 }
 
 .ddGallery-arrow-left span {
+	border-left-color: transparent;
 	border-right-color: #fff; /* css arrow color */
 	border-right-color: rgba(255, 255, 255, 0.5);
+	color: #fff; /* IE 6-7 fix */
 }
 
 .ddGallery-arrow-right span {
+	border-right-color: transparent;
 	border-left-color: #fff; /* css arrow color */
 	border-left-color: rgba(255, 255, 255, 0.5);
+	color: #fff; /* IE 6-7 fix */
 }
 
 .ddGallery-arrow-left:hover span {
+	border-left-color: transparent;
 	border-right-color: #fff; /* css arrow color */
+	color: #fff; /* IE 6-7 fix */
 }
 
 .ddGallery-arrow-right:hover span {
+	border-right-color: transparent;
 	border-left-color: #fff; /* css arrow color */
+	color: #fff; /* IE 6-7 fix */
 }
 	
 
@@ -499,21 +507,36 @@
 .ddGallery-count,
 .ddGallery-fullScreen,
 .ddGallery-fullScreen div,
+.ddGallery-fullScreen:hover,
+.ddGallery-fullScreen:hover > div > div,
+.ddGallery-fullScreen.active:hover > div > div,
 .ddGallery-stage-wrapper,
 .ddGallery-zoom,
+.ddGallery-zoom:hover,
+.ddGallery-zoom.active:hover,
+.ddGallery-caption-wrapper,
 .ddGallery-caption,
 .ddGallery-externalCaptions,
 .ddGallery-control-tab,
+.ddGallery-control-tab:hover,
+.ddGallery-control-tab.pinned:hover,
 .ddGallery-arrow-wrap,
 .ddGallery-arrow,
+.ddGallery-arrow:hover,
 .ddGallery-arrow span,
+.ddGallery-arrow-left:hover span,
+.ddGallery-arrow-right:hover span,
 .ddGallery-thumbs,
-/* BROKEN IN CURRENT RELEASE OF CSS3PIE */
-/*.ddGallery-thumbs a,*/ 
+/* BROKEN IN CURRENT RELEASE OF CSS3PIE
+.ddGallery-thumbs a,
+.ddGallery-thumbs a:hover,
+*/ 
 .ddGallery-thumbs a .ddGallery-watermark,
 .ddGallery-thumbs a .ddGallery-number,
 .ddGallery-dotNav,
 .ddGallery-dotNav .dot,
-.ddGallery-dotNav .number
+.ddGallery-dotNav .dot:hover,
+.ddGallery-dotNav .number,
+.ddGallery-dotNav .number:hover
 
 { /* behavior: url(PIE.htc); */ }

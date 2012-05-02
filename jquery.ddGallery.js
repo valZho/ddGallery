@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.4 :: 2012-05-02
+ * jQuery ddGallery v3.6.5 :: 2012-05-02
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -1760,16 +1760,18 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 			dd.arrows.find('span').css({
 				'top' : Math.floor((bH/2)-(aH)),
 				'left' : Math.floor(((bW/2)-(aW/2)-(aW*0.1))),
+				'border-top' : '0.53em dashed transparent',
+				'border-bottom' : '0.53em dashed transparent',
+				'border-left-style' : 'dashed',
 				'border-left-width' : '0',
-				'border-top' : 'solid transparent '+aH+'px',
-				'border-bottom' : 'solid transparent '+aH+'px',
 				'border-right-style' : 'solid',
 				'border-right-width' : aW+'px'
 			});
 			
 			dd.arrows.find('.ddGallery-arrow-right span').css({
 				'left' : Math.floor(((bW/2)-(aW/2))+(aW*0.1)),
-				'border-right' : 'solid 0 transparent',
+				'border-right-style' : 'dashed',
+				'border-right-width' : '0',
 				'border-left-style' : 'solid',
 				'border-left-width' : aW+'px'
 			});
