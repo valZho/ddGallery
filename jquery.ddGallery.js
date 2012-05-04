@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.5 :: 2012-05-02
+ * jQuery ddGallery v3.6.6 :: 2012-05-04
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -894,7 +894,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						};
 							
 						// add caption
-						dd.caption.attr('itemId',itemId).children('.ddGallery-caption').animate({'opacity':0}, dd.settings.captionHideSpeed/2, function(){
+						dd.caption.attr('itemId',itemId).children('.ddGallery-caption').stop(1,0).animate({'opacity':0}, dd.settings.captionHideSpeed/2, function(){
 							
 							var obj = $(this);
 							
@@ -1921,6 +1921,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 		moveControls : function(con, cap, speed) {
 			var dd = this,
 				id = dd.caption.attr('itemId'),
+				child = dd.caption.find('.ddGallery-caption'),
 				conH=0,
 				capH=0;
 			
@@ -1933,15 +1934,17 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 				dd.caption.stop(1,0).css({'opacity':1});
 				if (cap & dd.capSizes.heights[id]>0) {
 					capH = dd.capSizes.heights[id];
+					child.animate({'opacity':1}, speed);
 					dd.caption.animate({
 						'bottom' : conH,
 						'height' : dd.capSizes.heights[id]
 					}, speed).removeClass('collapsed');
 				} else {
+					child.animate({'opacity':0}, speed);
 					dd.caption.animate({
 						'height' : 0,
 						'bottom' : conH
-					}, speed).addClass('collapsed');;
+					}, speed).addClass('collapsed');
 				};
 			};
 			

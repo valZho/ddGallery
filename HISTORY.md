@@ -1,6 +1,9 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
+### v3.6.6 :: 2012-05-04
+* [ref] minor refinement to caption fade-in/out
+
 ### v3.6.5 :: 2012-05-02
 * [fix] arrow drawing issues in IE6-7
 
