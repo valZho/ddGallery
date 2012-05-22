@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 /*
- * jQuery ddGallery v3.6.6 :: 2012-05-04
+ * jQuery ddGallery v3.6.7 :: 2012-05-22
  * http://inventurous.net/ddgallery
  *
  * Copyright (c) 2012, Darren Doyle
@@ -380,7 +380,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						
 						// youtube video
 						} else if (linkType[1]=='youtube') {
-							url = linkType[5];
+							url = '/' + linkType[5];
 							me.addClass(url); // add this id as class to pull content later
 							cap = me.attr('title'); // caption
 							type = 'youtube';
@@ -579,6 +579,7 @@ if (typeof(onYouTubePlayerAPIReady) != 'function') {
 						type = thisThumb.attr('class'), // type of content animating to
 						typeFrom = dd.thumbs.children('a:nth-child('+dd.curItem+')').attr('class'), // type of content animating from
 						url = thisThumb.attr('href'), // the content
+						url =  (type=='youtube') ? url.substring(1) : url, // IE fix
 						itemId = thisThumb.attr('itemId'), // the unique ID for this item
 						cap = thisThumb.attr('title'), // image description
 						sourceId = thisThumb.attr('sourceId'), // id of original item
