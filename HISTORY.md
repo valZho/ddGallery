@@ -1,7 +1,7 @@
 Title: ddGallery Version History
 Author: Darren Doyle
 
-### v3.6.7 :: 2012-05-22
+### v3.6.7.1 :: 2012-05-22
 * [fix] YouTube url handling for more graceful IE7 degrade (video can still play)
 
 ### v3.6.6 :: 2012-05-04
